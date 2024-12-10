@@ -25,4 +25,4 @@ sudo tail -f /var/log/gstreamer-error.log
 
 # Python libs
 
-sudo apt install python3-flask
+sudo apt install python3-flask python3-waitress
