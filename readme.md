@@ -26,3 +26,12 @@ sudo tail -f /var/log/gstreamer-error.log
 # Python libs
 
 sudo apt install python3-flask python3-waitress
+
+# Restream mjpeg with http headers
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable mjpegstreamhttp.service
+
+sudo systemctl start mjpegstreamhttp.service
+
