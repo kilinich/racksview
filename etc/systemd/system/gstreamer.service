@@ -1,0 +1,13 @@
+[Unit]
+Description=GStreamer Video Stream Service
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/start_gstreamer.sh
+Restart=on-failure
+StandardOutput=null
+StandardError=append:/var/log/gstreamer-error.log
+Environment=DISPLAY=:0
+
+[Install]
+WantedBy=multi-user.target
