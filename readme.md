@@ -22,3 +22,7 @@ sudo systemctl start gstreamer.service
 sudo systemctl status gstreamer.service
 
 sudo tail -f /var/log/gstreamer-error.log
+
+# Python libs
+
+sudo apt install python3-flask
