@@ -16,7 +16,7 @@ def generate_stream():
                 while True:
                     data = sock.recv(4096)
                     if not data:
-                        # wait maybe
+                        # no wait
                         break
                     yield data
         except socket.error as e:
