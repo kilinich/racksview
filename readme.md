@@ -9,3 +9,5 @@ sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgst
 # FFmpeg
 sudo apt-get install ffmpeg
 
+#GStreamer service
+sudo chmod +x /usr/local/bin/start_gstreamer.sh
