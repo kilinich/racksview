@@ -1,0 +1,13 @@
+[Unit]
+Description=MJPEG HTTP Restream Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/bin/restream.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
