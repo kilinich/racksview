@@ -5,10 +5,10 @@ Requires=gstreamer.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /usr/local/bin/restream.py -c /usr/local/bin/webstreamlow.ini
+ExecStart=/usr/bin/python3 /usr/local/bin/restreamer.py -c /usr/local/bin/webstreamerlow.ini
 Restart=on-failure
 RestartSec=5
-StandardOutput=file:/var/log/webstreamlow.log
+StandardOutput=file:/var/log/webstreamerlow.log
 StandardError=inherit
 
 [Install]
