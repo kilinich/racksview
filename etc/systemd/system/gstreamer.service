@@ -5,8 +5,8 @@ After=network.target
 [Service]
 ExecStart=/usr/local/bin/start_gstreamer.sh
 Restart=on-failure
-StandardOutput=null
-StandardError=append:/var/log/gstreamer-error.log
+StandardOutput=append:/var/log/restreamer1.log
+StandardError=inherit
 Environment=DISPLAY=:0
 
 [Install]
