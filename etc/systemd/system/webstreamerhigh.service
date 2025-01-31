@@ -8,7 +8,7 @@ Type=simple
 ExecStart=/usr/bin/python3 /usr/local/bin/restreamer.py -c /usr/local/bin/webstreamerhigh.ini
 Restart=on-failure
 RestartSec=5
-StandardOutput=file:/var/log/webstreamhigh.log
+StandardOutput=file:/var/log/webstreamerhigh.log
 StandardError=inherit
 
 [Install]
