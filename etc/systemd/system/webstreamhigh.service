@@ -1,0 +1,15 @@
+[Unit]
+Description=MJPEG HTTP Restream Service High Resolution
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/bin/restream.py --tcp_host 127.0.0.1 --tcp_port 8013 --http_host 0.0.0.0 --http_port 8082
+Restart=on-failure
+RestartSec=5
+StandardOutput=file:/var/log/webstreamhigh.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
