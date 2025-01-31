@@ -8,6 +8,10 @@ graph TD;
     C --> E[Конец];
     D --> E;
 
+
+
+
+
 Installing apps:
 
 # LibCamera
