@@ -7,8 +7,7 @@ graph TD;
     B -->|Нет| D[Действие 2];
     C --> E[Конец];
     D --> E;
-
-<br>
+```
 
 Installing apps:
 
