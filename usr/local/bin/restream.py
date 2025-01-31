@@ -1,49 +1,65 @@
+import configparser
 import argparse
-import logging
-from flask import Flask, Response
 import socket
 import time
+import logging
+from flask import Flask, Response
 from waitress import serve
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-parser = argparse.ArgumentParser(description="MJPEG HTTP Stream Server")
-parser.add_argument("--tcp_host", type=str, default="127.0.0.1", help="TCP server host")
-parser.add_argument("--tcp_port", type=int, default=8080, help="TCP server port")
-parser.add_argument("--http_host", type=str, default="0.0.0.0", help="HTTP server host")
-parser.add_argument("--http_port", type=int, default=8081, help="HTTP server port")
+# Load parameters from the configuration file
+def load_config(config_path):
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    return {
+        "mjpeg_addr": config.get("MJPEG_Source", "MJPEG_ADDR", fallback="127.0.0.1"),
+        "mjpeg_port": config.getint("MJPEG_Source", "MJPEG_PORT", fallback=8012),
+        "bind_addr": config.get("HTTP_Stream", "BIND_ADDR", fallback="0.0.0.0"),
+        "bind_port": config.getint("HTTP_Stream", "BIND_PORT", fallback=8081)
+    }
+
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description="MJPEG Streaming Server")
+parser.add_argument("-c", "--config", required=True, help="Path to configuration file")
 args = parser.parse_args()
 
-app = Flask(__name__)
+# Load configuration
+config = load_config(args.config)
 
-TCP_SERVER_HOST = args.tcp_host
-TCP_SERVER_PORT = args.tcp_port
+app = Flask(__name__)
 BOUNDARY_STRING = "--ThisRandomString"
+
+MJPEG_ADDR = config["mjpeg_addr"]
+MJPEG_PORT = config["mjpeg_port"]
+BIND_ADDR = config["bind_addr"]
+BIND_PORT = config["bind_port"]
 
 def generate_stream():
     while True:
         try:
-            with socket.create_connection((TCP_SERVER_HOST, TCP_SERVER_PORT)) as sock:
-                logger.info(f"Connected to {TCP_SERVER_HOST}:{TCP_SERVER_PORT}")
+            logging.info(f"Connecting to MJPEG source at {MJPEG_ADDR}:{MJPEG_PORT}")
+            with socket.create_connection((MJPEG_ADDR, MJPEG_PORT)) as sock:
+                logging.info("Connection established. Streaming data...")
                 while True:
                     data = sock.recv(4096)
                     if not data:
+                        logging.warning("No more data received. Reconnecting...")
                         break
                     yield data
         except socket.error as e:
-            logger.error(f"Error connecting to {TCP_SERVER_HOST}:{TCP_SERVER_PORT}: {e}")
+            logging.error(f"Error connecting to {MJPEG_ADDR}:{MJPEG_PORT}: {e}")
             time.sleep(1)
 
 @app.route('/')
 def mjpeg_stream():
-    logger.info("Received HTTP request for MJPEG stream")
-    headers = {"Content-Type": f"multipart/x-mixed-replace; boundary={BOUNDARY_STRING}"}
+    logging.info("Client connected. Streaming MJPEG...")
+    headers = {
+        "Content-Type": f"multipart/x-mixed-replace; boundary={BOUNDARY_STRING}"
+    }
     return Response(generate_stream(), headers=headers)
 
 if __name__ == '__main__':
-    logger.info(f"Starting MJPEG HTTP Stream Server on {args.http_host}:{args.http_port}")
-    serve(app, host=args.http_host, port=args.http_port)
+    logging.info(f"Starting MJPEG streaming server on {BIND_ADDR}:{BIND_PORT}")
+    serve(app, host=BIND_ADDR, port=BIND_PORT)
