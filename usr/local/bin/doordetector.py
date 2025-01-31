@@ -66,38 +66,34 @@ def read_distance(serial_config):
     finally:
         ser.close()
 
-def detect_door_state(measurements, baseline_distance, detection_config, last_stable_time):
+def detect_door_state(measurements, baseline_distance, detection_config, last_stable_time, current_state):
     """Determines the door state based on measurement sequences."""
     window_size = detection_config["window_size"]
     threshold_change = detection_config["threshold_change"]
     stable_std_dev = detection_config["stable_std_dev"]
     stable_duration = detection_config["stable_duration"]
+    current_time = time.time()
 
     if len(measurements) < window_size:
         return "Initializing", baseline_distance, last_stable_time
 
     mean_val = np.mean(measurements)
     std_dev = np.std(measurements)
-    current_time = time.time()
 
-    if baseline_distance is None and std_dev < stable_std_dev:
+    if current_state == "Initializing" and std_dev < stable_std_dev:
         baseline_distance = mean_val
         last_stable_time = current_time
-        logging.info("Calibrated: Closed")
+        logging.info("Baseline set: Closed")
         return "Closed", baseline_distance, last_stable_time
 
-    if baseline_distance is not None:
-        if std_dev < stable_std_dev:
-            if abs(mean_val - baseline_distance) < threshold_change:
-                if current_time - last_stable_time >= stable_duration:
-                    return "Closed", baseline_distance, current_time
-                return "Stable, waiting confirmation", baseline_distance, last_stable_time
-            else:
-                return "Open", baseline_distance, last_stable_time
-        else:
-            return "Moving", baseline_distance, last_stable_time
-    
-    return "Unknown", baseline_distance, last_stable_time
+    if std_dev < stable_std_dev:
+        if abs(mean_val - baseline_distance) < threshold_change:
+            if current_time - last_stable_time >= stable_duration:
+                baseline_distance = mean_val
+                return "Closed", baseline_distance, current_time
+            return "Closed", baseline_distance, last_stable_time
+        
+    return "Opened", baseline_distance, current_time
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Door state detection system")
@@ -108,7 +104,7 @@ if __name__ == "__main__":
     measurements = deque(maxlen=config["detection"]["window_size"])
     baseline_distance = None
     last_stable_time = time.time()
-    last_state = None
+    current_state = "Initializing"
     
     logging.info("Starting door state detection...")
     
@@ -116,15 +112,14 @@ if __name__ == "__main__":
         distance = read_distance(config["serial"])
         if distance is not None:
             measurements.append(distance)
-            state, baseline_distance, last_stable_time = detect_door_state(
-                measurements, baseline_distance, config["detection"], last_stable_time
+            new_state, baseline_distance, last_stable_time = detect_door_state(
+                measurements, baseline_distance, config["detection"], last_stable_time, current_state
             )
             
-            if state != last_state:
-                logging.info(f"Door state changed: {state}")
-                last_state = state
-                
-                if state == "Open":
+            if new_state != current_state:
+                logging.info(f"Door state changed: {new_state}")
+                if new_state == "Opened":
                     subprocess.Popen(config["detection"]["run_on_open"], shell=True)
-                elif state == "Closed":
+                elif new_state == "Closed":
                     subprocess.Popen(config["detection"]["run_on_close"], shell=True)
+                current_state = new_state
