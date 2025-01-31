@@ -4,14 +4,15 @@ import configparser
 import logging
 import time
 import subprocess
+import argparse
 from collections import deque
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def load_config():
+def load_config(config_path):
     config = configparser.ConfigParser()
-    config.read("config.ini")
+    config.read(config_path)
     return {
         "serial": {
             "device": config.get("serial", "device", fallback="/dev/ttyAMA0"),
@@ -99,7 +100,11 @@ def detect_door_state(measurements, baseline_distance, detection_config, last_st
     return "Unknown", baseline_distance, last_stable_time
 
 if __name__ == "__main__":
-    config = load_config()
+    parser = argparse.ArgumentParser(description="Door state detection system")
+    parser.add_argument("-c", "--config", type=str, default="doordetector.ini", help="Path to the configuration file")
+    args = parser.parse_args()
+    
+    config = load_config(args.config)
     measurements = deque(maxlen=config["detection"]["window_size"])
     baseline_distance = None
     last_stable_time = time.time()
