@@ -1,7 +1,7 @@
 [Unit]
 Description=MJPEG HTTP Restream Service High Resolution
-After=network-online.target
-Wants=network-online.target
+After=gstreamer.service
+Requires=gstreamer.service
 
 [Service]
 Type=simple
