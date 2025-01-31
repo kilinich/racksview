@@ -8,9 +8,7 @@ graph TD;
     C --> E[Конец];
     D --> E;
 
-
-
-
+<!-- Mermaid diagram end -->
 
 Installing apps:
 
