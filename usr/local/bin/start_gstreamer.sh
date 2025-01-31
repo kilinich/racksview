@@ -13,6 +13,4 @@ libcamerasrc name=src ! queue ! video/x-raw,framerate=1/1 ! tee name=t \
         textoverlay text="$HOSTNAME" valignment=top halignment=left font-desc="Sans, 20" xpos=5 ypos=5 ! \
         clockoverlay time-format="%H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 20" xpos=5 ypos=-5 ! \
         videoconvert ! jpegenc quality=80 ! multipartmux ! queue ! \
-        tcpserversink host=0.0.0.0 port=8012 \
-2>/var/log/gstreamer.log
-
+        tcpserversink host=0.0.0.0 port=8012 
