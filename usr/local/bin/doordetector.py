@@ -77,19 +77,19 @@ def detect_door_state(measurements, baseline_distance, detection_config, last_st
     if len(measurements) < window_size:
         return "Initializing", baseline_distance, last_stable_time
 
-    mean_val = np.mean(measurements)
+    median_val = np.median(measurements)
     std_dev = np.std(measurements)
 
     if current_state == "Initializing" and std_dev < stable_std_dev:
-        baseline_distance = mean_val
+        baseline_distance = median_val
         last_stable_time = current_time
         logging.info("Baseline set: Closed")
         return "Closed", baseline_distance, last_stable_time
 
     if std_dev < stable_std_dev:
-        if abs(mean_val - baseline_distance) < threshold_change:
+        if abs(median_val - baseline_distance) < threshold_change:
             if current_time - last_stable_time >= stable_duration:
-                baseline_distance = mean_val
+                baseline_distance = median_val
                 return "Closed", baseline_distance, current_time
             return "Closed", baseline_distance, last_stable_time
         
