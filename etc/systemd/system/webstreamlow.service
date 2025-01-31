@@ -5,7 +5,7 @@ Requires=gstreamer.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /usr/local/bin/restream.py --tcp_host 127.0.0.1 --tcp_port 8012 --http_host 0.0.0.0 --http_port 8081
+ExecStart=/usr/bin/python3 /usr/local/bin/restream.py -c /usr/local/bin/webstreamlow.ini
 Restart=on-failure
 RestartSec=5
 StandardOutput=file:/var/log/webstreamlow.log
