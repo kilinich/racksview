@@ -2,6 +2,21 @@
 
 export HOSTNAME=$(hostname)
 
+# Start the gstreamer pipeline
+
+# This pipeline captures video from the camera, adds a text overlay with the hostname and current time, 
+# scales the video to two different resolutions, encodes the video as jpeg, and sends the video over TCP to two different ports.
+
+# The pipeline uses the libcamerasrc element to capture video from the camera. 
+
+# The tee element is used to split the video stream into two branches. 
+
+# The first branch scales the video to a resolution of 1240x768, adds a text overlay with the hostname and current time, 
+# encodes the video as jpeg with a quality of 60, and sends the video over TCP to port 8013. 
+
+# The second branch scales the video to a resolution of 320x240, adds a text overlay with the hostname and current time, 
+# encodes the video as jpeg with a quality of 80, and sends the video over TCP to port 8012.
+
 gst-launch-1.0 -e \
 libcamerasrc name=src ! queue ! video/x-raw,framerate=1/1 ! tee name=t \
     t. ! queue ! videoscale ! video/x-raw,width=1240,height=768 ! videoconvert ! \

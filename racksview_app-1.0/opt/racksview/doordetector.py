@@ -24,7 +24,7 @@ def load_config(config_path):
     config.read(config_path)
     return {
         "serial": {
-            "device": config.get("serial", "device", fallback="/dev/ttyAMA0"),
+            "device": config.get("serial", "device", fallback="/dev/serial0"),
             "baudrate": config.getint("serial", "baudrate", fallback=115200),
             "bytesize": config.getint("serial", "bytesize", fallback=8),
             "parity": config.get("serial", "parity", fallback="N"),
@@ -36,7 +36,7 @@ def load_config(config_path):
             "threshold_change": config.getint("detection", "threshold_change", fallback=50),
             "stable_std_dev": config.getint("detection", "stable_std_dev", fallback=5),
             "stable_duration": config.getint("detection", "stable_duration", fallback=300),  # 5 minutes
-            "run_on_open": config.get("detection", "run_on_open", fallback="recordvideo.sh"),
+            "run_on_open": config.get("detection", "run_on_open", fallback="startvideo.sh"),
             "run_on_close": config.get("detection", "run_on_close", fallback="stopvideo.sh"),
         }
     }

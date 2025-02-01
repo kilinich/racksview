@@ -1,7 +1,7 @@
 import serial
 
 def read_distance():
-    ser = serial.Serial('/dev/ttyAMA0', baudrate=115200, bytesize=8, parity='N', stopbits=1, timeout=1)
+    ser = serial.Serial('/dev/serial0', baudrate=115200, bytesize=8, parity='N', stopbits=1, timeout=1)
     
     try:
         buffer = bytearray()
@@ -19,6 +19,10 @@ def read_distance():
                     
                     if calculated_checksum == checksum:
                         distance = (data_h << 8) + data_l
+                        # Check for co-frequency interference (FFFE -> 65534 in decimal)
+                        if distance == 65534:
+                            print("Co-frequency interference detected!")
+                            continue
                         print(distance)
                         
                         buffer.clear()
