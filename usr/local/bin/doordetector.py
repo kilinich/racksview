@@ -5,10 +5,19 @@ import logging
 import time
 import subprocess
 import argparse
+import signal
 from collections import deque
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Global variable to track running state
+running = True
+
+def handle_exit_signal(signum, frame):
+    global running
+    logging.info("Received termination signal. Stopping...")
+    running = False
 
 def load_config(config_path):
     config = configparser.ConfigParser()
@@ -32,9 +41,9 @@ def load_config(config_path):
         }
     }
 
-def read_distance(serial_config):
-    """Reads data from the sensor and returns the distance in mm."""
-    ser = serial.Serial(
+def open_serial_port(serial_config):
+    """Opens the serial port once and returns the serial object."""
+    return serial.Serial(
         serial_config["device"],
         baudrate=serial_config["baudrate"],
         bytesize=serial_config["bytesize"],
@@ -42,29 +51,33 @@ def read_distance(serial_config):
         stopbits=serial_config["stopbits"],
         timeout=serial_config["timeout"]
     )
+
+def read_distance(ser):
+    """Reads data from the sensor and returns the distance in mm."""
     buffer = bytearray()
     
-    try:
-        while True:
-            byte = ser.read(1)
-            if byte:
-                buffer.append(byte[0])
+    while running:
+        byte = ser.read(1)
+        if byte:
+            buffer.append(byte[0])
+            
+            if len(buffer) > 4:
+                buffer.pop(0)
+            
+            if len(buffer) == 4 and buffer[0] == 0xFF:
+                start_byte, data_h, data_l, checksum = buffer
+                calculated_checksum = (start_byte + data_h + data_l) & 0x00FF
                 
-                if len(buffer) > 4:
-                    buffer.pop(0)
-                
-                if len(buffer) == 4 and buffer[0] == 0xFF:
-                    start_byte, data_h, data_l, checksum = buffer
-                    calculated_checksum = (start_byte + data_h + data_l) & 0x00FF
+                if calculated_checksum == checksum:
+                    distance = (data_h << 8) + data_l
+                    buffer.clear()
                     
-                    if calculated_checksum == checksum:
-                        distance = (data_h << 8) + data_l
-                        buffer.clear()
-                        return distance
-    except KeyboardInterrupt:
-        pass
-    finally:
-        ser.close()
+                    # Check for co-frequency interference (FFFE -> 65534 in decimal)
+                    if distance == 65534:
+                        logging.warning("Co-frequency interference detected!")
+                        continue
+                    
+                    return distance
 
 def detect_door_state(measurements, baseline_distance, detection_config, last_stable_time, current_state):
     """Determines the door state based on measurement sequences."""
@@ -108,18 +121,29 @@ if __name__ == "__main__":
     
     logging.info("Starting door state detection...")
     
-    while True:
-        distance = read_distance(config["serial"])
-        if distance is not None:
-            measurements.append(distance)
-            new_state, baseline_distance, last_stable_time = detect_door_state(
-                measurements, baseline_distance, config["detection"], last_stable_time, current_state
-            )
-            
-            if new_state != current_state:
-                logging.info(f"Door state changed: {new_state}")
-                if new_state == "Opened":
-                    subprocess.Popen(config["detection"]["run_on_open"], shell=True)
-                elif new_state == "Closed":
-                    subprocess.Popen(config["detection"]["run_on_close"], shell=True)
-                current_state = new_state
+    ser = open_serial_port(config["serial"])  # Open serial port once
+    
+    signal.signal(signal.SIGINT, handle_exit_signal)  # Handle Ctrl+C
+    signal.signal(signal.SIGTERM, handle_exit_signal) # Handle systemctl stop
+    
+    try:
+        while running:
+            distance = read_distance(ser)
+            if distance is not None:
+                measurements.append(distance)
+                new_state, baseline_distance, last_stable_time = detect_door_state(
+                    measurements, baseline_distance, config["detection"], last_stable_time, current_state
+                )
+                
+                if new_state != current_state:
+                    logging.info(f"Door state changed: {new_state}")
+                    if new_state == "Opened":
+                        subprocess.Popen(config["detection"]["run_on_open"], shell=True)
+                    elif new_state == "Closed":
+                        subprocess.Popen(config["detection"]["run_on_close"], shell=True)
+                    current_state = new_state
+    except Exception as e:
+        logging.error(f"Unexpected error: {e}")
+    finally:
+        ser.close()
+        logging.info("Serial port closed. Exiting.")
