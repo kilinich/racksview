@@ -1,0 +1,13 @@
+[Unit]
+Description=Ultrasonic sensor door detector
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/racksview/doordetector.py -c /etc/racksview/doordetector.ini
+Restart=on-failure
+RestartSec=5
+StandardOutput=file:/var/log/racksview/doordetector.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

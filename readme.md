@@ -17,6 +17,7 @@ install: python3-flask python3-waitress
 
 DoorDetector
 install: python3-serial python3-numpy
+test: python3 /opt/racksview/testultrasonic.py 
 
 USB auto-mount
 install gdebi; gdeby /var/tmp/usbmount_0.0.24_all.deb
