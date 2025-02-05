@@ -3,9 +3,9 @@ Description=GStreamer Video Stream Service
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/start_gstreamer.sh
+ExecStart=/opt/racksview/start_gstreamer.sh
 Restart=on-failure
-StandardOutput=file:/var/log/gstreamer.log
+StandardOutput=file:/var/log/racksview/gstreamer.log
 StandardError=inherit
 Environment=DISPLAY=:0
 

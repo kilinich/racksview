@@ -11,7 +11,7 @@ export HOSTNAME=$(hostname)
 
 # The tee element is used to split the video stream into two branches. 
 
-# The first branch scales the video to a resolution of 1240x768, adds a text overlay with the hostname and current time, 
+# The first branch scales the video to a resolution of 1296x972, adds a text overlay with the hostname and current time, 
 # encodes the video as jpeg with a quality of 60, and sends the video over TCP to port 8013. 
 
 # The second branch scales the video to a resolution of 320x240, adds a text overlay with the hostname and current time, 
@@ -19,7 +19,7 @@ export HOSTNAME=$(hostname)
 
 gst-launch-1.0 -e \
 libcamerasrc name=src ! queue ! video/x-raw,framerate=1/1 ! tee name=t \
-    t. ! queue ! videoscale ! video/x-raw,width=1240,height=768 ! videoconvert ! \
+    t. ! queue ! videoscale ! video/x-raw,width=1296,height=972 ! videoconvert ! \
         textoverlay text="$HOSTNAME" valignment=top halignment=left font-desc="Sans, 10" xpos=10 ypos=10 ! \
         clockoverlay time-format="%d-%m-%Y %H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 10" xpos=10 ypos=-10 ! \
         videoconvert ! jpegenc quality=60 ! multipartmux ! queue ! \
@@ -28,4 +28,4 @@ libcamerasrc name=src ! queue ! video/x-raw,framerate=1/1 ! tee name=t \
         textoverlay text="$HOSTNAME" valignment=top halignment=left font-desc="Sans, 20" xpos=5 ypos=5 ! \
         clockoverlay time-format="%H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 20" xpos=5 ypos=-5 ! \
         videoconvert ! jpegenc quality=80 ! multipartmux ! queue ! \
-        tcpserversink host=0.0.0.0 port=8012 
+        tcpserversink host=0.0.0.0 port=8012
