@@ -28,7 +28,7 @@ do
     FULL_PATH="${TARGET_DIR}/${OUTPUT_FILE}"
 
     # Run ffmpeg to record a 5-minute segment, overwriting any existing file (-y)
-    ffmpeg -y -loglevel warning -r 1 -i tcp://192.168.1.119:${SOURCE_PORT} \
+    ffmpeg -y -loglevel warning -r 1 -i tcp://127.0.0.1:${SOURCE_PORT} \
       -t ${SEGMENT_DURATION} \
       -c:v libx264 -preset veryfast -b:v ${BITRATE}k \
       "${FULL_PATH}"

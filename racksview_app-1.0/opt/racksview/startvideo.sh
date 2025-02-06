@@ -1,6 +1,13 @@
 #!/bin/bash
 
+# Parameters
+FLAGS_DIR="/opt/racksview/flags"
+
 #remove stop flag
-rm -f /opt/racksview/flags/stop.flg
+rm -f "${FLAGS_DIR}"/stop.flg
 # set start flag
-touch /opt/racksview/flags/start.flg
+mkdir -p "${FLAGS_DIR}" 2>/dev/null
+touch "${FLAGS_DIR}"/start.flg
+
+#beep
+python3 /opt/racksview/beep.py -config /etc/racksview/beep.ini -signal "door_open"
