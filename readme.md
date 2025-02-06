@@ -21,3 +21,6 @@ test: python3 /opt/racksview/testultrasonic.py
 
 USB auto-mount
 install gdebi; gdeby /var/tmp/usbmount_0.0.24_all.deb
+
+VRecorder
+install: ffmpeg

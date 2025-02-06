@@ -1,3 +1,2 @@
 #!/bin/bash
-
-#remove video flag
+touch /opt/racksview/flags/stop.flg
