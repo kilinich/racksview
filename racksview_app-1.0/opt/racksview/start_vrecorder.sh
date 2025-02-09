@@ -7,9 +7,11 @@ SEGMENT_DURATION=300            # Duration (in seconds) for each segment
 BITRATE=50                      # Bitrate (in kbps) for libx264 encoding
 
 START_FLAG="/opt/racksview/flags/start.flg"
-STOP_FLAG="/opt/racksview/flag/stop.flg"
+STOP_FLAG="/opt/racksview/flags/stop.flg"
+NO_DATA_FLAG="/opt/racksview/flags/no_data.flg"
 
 export HOSTNAME=$(hostname)
+echo "Starting VRecorder on ${HOSTNAME}..."
 
 while true
 do
@@ -36,6 +38,7 @@ do
 
     # If either flag exists, rename the file to include '-action'
     if [ -f "${START_FLAG}" ] || [ -f "${STOP_FLAG}" ]; then
+        echo "Action detected, renaming file..."
         ACTION_PATH="${TARGET_DIR}/${HOUR}-${MINUTE}_${HOSTNAME}_recording-action.mp4"
         mv "${FULL_PATH}" "${ACTION_PATH}"
     fi

@@ -1,3 +1,5 @@
 #!/bin/bash
 
-echo No door data available.
+# set start flag
+mkdir -p "${FLAGS_DIR}" 2>/dev/null
+touch "${FLAGS_DIR}"/no_data.flg
