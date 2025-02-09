@@ -4,6 +4,7 @@ After=gstreamer.service
 Requires=gstreamer.service
 
 [Service]
+ExecStartPre=/usr/bin/rm -f /var/log/racksview/vrecorder.log
 ExecStart=/opt/racksview/start_vrecorder.sh
 Restart=on-failure
 StandardOutput=file:/var/log/racksview/vrecorder.log

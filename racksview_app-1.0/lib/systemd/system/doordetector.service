@@ -3,6 +3,7 @@ Description=Ultrasonic sensor door detector
 
 [Service]
 Type=simple
+ExecStartPre=/usr/bin/rm -f /var/log/racksview/doordetector.log
 ExecStart=/usr/bin/python3 /opt/racksview/doordetector.py -c /etc/racksview/doordetector.ini
 Restart=on-failure
 RestartSec=5

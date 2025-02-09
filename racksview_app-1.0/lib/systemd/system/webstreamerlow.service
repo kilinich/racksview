@@ -1,10 +1,10 @@
 [Unit]
 Description=MJPEG HTTP Restream Service Low Resolution
 After=gstreamer.service
-Requires=gstreamer.service
 
 [Service]
 Type=simple
+ExecStartPre=/usr/bin/rm -f /var/log/racksview/webstreamerlow.log
 ExecStart=/usr/bin/python3 /opt/racksview/restreamer.py -c /etc/racksview/webstreamerlow.ini
 Restart=on-failure
 RestartSec=5

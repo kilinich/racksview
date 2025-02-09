@@ -3,6 +3,7 @@ Description=GStreamer Video Stream Service
 After=network.target
 
 [Service]
+ExecStartPre=/usr/bin/rm -f /var/log/racksview/gstreamer.log
 ExecStart=/opt/racksview/start_gstreamer.sh
 Restart=on-failure
 StandardOutput=file:/var/log/racksview/gstreamer.log

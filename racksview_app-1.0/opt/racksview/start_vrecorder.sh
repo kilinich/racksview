@@ -9,6 +9,8 @@ BITRATE=50                      # Bitrate (in kbps) for libx264 encoding
 START_FLAG="/opt/racksview/flags/start.flg"
 STOP_FLAG="/opt/racksview/flag/stop.flg"
 
+export HOSTNAME=$(hostname)
+
 while true
 do
     # Get current date/time components
@@ -17,14 +19,13 @@ do
     DAY=$(date +%d)
     HOUR=$(date +%H)
     MINUTE=$(date +%M)
-    SECOND=$(date +%S)
 
     # Create target directory if it doesn't exist
     TARGET_DIR="${TARGET_BASE}/${YEAR}/${MONTH}/${DAY}"
     mkdir -p "${TARGET_DIR}" 2>/dev/null
 
     # Build output file name with hours, minutes, and seconds
-    OUTPUT_FILE="${HOUR}-${MINUTE}-${SECOND}_recording.mp4"
+    OUTPUT_FILE="${HOUR}-${MINUTE}_${HOSTNAME}_recording.mp4"
     FULL_PATH="${TARGET_DIR}/${OUTPUT_FILE}"
 
     # Run ffmpeg to record a 5-minute segment, overwriting any existing file (-y)
@@ -35,7 +36,7 @@ do
 
     # If either flag exists, rename the file to include '-action'
     if [ -f "${START_FLAG}" ] || [ -f "${STOP_FLAG}" ]; then
-        ACTION_PATH="${TARGET_DIR}/${HOUR}-${MINUTE}-${SECOND}_recording-action.mp4"
+        ACTION_PATH="${TARGET_DIR}/${HOUR}-${MINUTE}_${HOSTNAME}_recording-action.mp4"
         mv "${FULL_PATH}" "${ACTION_PATH}"
     fi
 
