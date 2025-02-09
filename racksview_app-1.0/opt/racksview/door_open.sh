@@ -10,4 +10,4 @@ mkdir -p "${FLAGS_DIR}" 2>/dev/null
 touch "${FLAGS_DIR}"/start.flg
 
 #beep
-python3 /opt/racksview/beep.py -config /etc/racksview/beep.ini -signal "door_open"
+python3 /opt/racksview/beep.py --config /etc/racksview/beep.ini --signal "door_open"
