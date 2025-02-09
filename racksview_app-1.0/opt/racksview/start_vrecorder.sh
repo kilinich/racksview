@@ -27,7 +27,7 @@ do
     mkdir -p "${TARGET_DIR}" 2>/dev/null
 
     # Build output file name with hours, minutes, and seconds
-    OUTPUT_FILE="${HOUR}-${MINUTE}_${HOSTNAME}_recording.mp4"
+    OUTPUT_FILE="${HOUR}-${MINUTE}_${HOSTNAME}_recording.tmp"
     FULL_PATH="${TARGET_DIR}/${OUTPUT_FILE}"
 
     # Run ffmpeg to record a 5-minute segment, overwriting any existing file (-y)
@@ -41,6 +41,9 @@ do
         echo "Action detected, renaming file..."
         ACTION_PATH="${TARGET_DIR}/${HOUR}-${MINUTE}_${HOSTNAME}_recording-action.mp4"
         mv "${FULL_PATH}" "${ACTION_PATH}"
+    else 
+        FILE_PATH="${TARGET_DIR}/${HOUR}-${MINUTE}_${HOSTNAME}_recording.mp4"
+        mv "${FULL_PATH}" "${FILE_PATH}"
     fi
 
     # If STOP_FLAG exists, remove it (and START_FLAG too if it exists)
