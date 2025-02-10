@@ -27,7 +27,7 @@ do
     mkdir -p "${TARGET_DIR}" 2>/dev/null
 
     # Build output file name with hours, minutes, and seconds
-    OUTPUT_FILE="${HOUR}-${MINUTE}_${HOSTNAME}_recording.tmp"
+    OUTPUT_FILE="${HOUR}-${MINUTE}_${HOSTNAME}_live.mp4"
     FULL_PATH="${TARGET_DIR}/${OUTPUT_FILE}"
 
     # Run ffmpeg to record a 5-minute segment, overwriting any existing file (-y)
