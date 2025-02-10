@@ -66,12 +66,12 @@ def list_files(subpath):
                 .size { color: gray; font-size: 14px; margin-left: 10px; }
                 a { text-decoration: none; color: #0066cc; }
                 a:hover { color: #004499; }
-                .live-video { font-size: 18px; font-weight: bold; margin-bottom: 15px; display: block; }
+                .live-video { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
             </style>
         </head>
         <body>
-            <h3><a href="{{ live_video_url }}" class="live-video">🔴 Live Video</a>
-            <h3>{{ hostname }} video recordings - <span style="color: gray;">{{ display_path }}</span></h2>
+            <h3>{{ hostname }} <a href="{{ live_video_url }}" class="live-video">{{ hostname }} 🔴 Live Video</a></h3>
+            <h3>Video recordings - <span style="color: gray;">{{ display_path }}</span></h3>
             <ul>
                 {% if subpath %}
                     <li><a href="{{ parent_path }}">⤴️..</a></li>
