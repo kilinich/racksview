@@ -82,11 +82,11 @@ def list_files(subpath):
                     <li><a href="{{ parent_path }}">⤴️..</a></li>
                 {% endif %}
                 {% for d in dirs %}
-                    <li><a href="{{ '/' + (subpath + '/' + d if subpath else d) }}">📂 {{ d }}</a></li>
+                    <li><a href="{{ '/' + (subpath + '/' + d if subpath else d) }}">📂{{ d }}</a></li>
                 {% endfor %}
                 {% for f, size in files %}
                     <li>
-                        <a href="{{ '/' + (subpath + '/' + f if subpath else f) }}">📼 {{ f }}</a>
+                        <a href="{{ '/' + (subpath + '/' + f if subpath else f) }}">📼{{ f }}</a>
                         <span class="size">({{ "%.2f"|format(size) }} MB)</span>
                     </li>
                 {% endfor %}
