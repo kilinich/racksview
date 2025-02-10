@@ -1,15 +1,15 @@
 [Unit]
-Description=Video Recording web server
-After=vrecorder.service
+Description=Video recordings web server
+After=gstreamer.service
 
 [Service]
-Type=Simple
+Type=simple
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/recwebserver.log
 ExecStart=/usr/bin/python3 /opt/racksview/recwebserver.py --config /etc/racksview/recwebserver.ini
 Restart=on-failure
+RestartSec=5
 StandardOutput=file:/var/log/racksview/recwebserver.log
 StandardError=inherit
-Environment=DISPLAY=:0
 
 [Install]
 WantedBy=multi-user.target

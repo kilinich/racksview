@@ -1,5 +1,5 @@
 [Unit]
-Description=GStreamer Video Stream Service
+Description=GStreamer video stream service
 After=network.target
 
 [Service]

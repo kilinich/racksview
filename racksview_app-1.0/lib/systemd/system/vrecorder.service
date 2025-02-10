@@ -1,5 +1,5 @@
 [Unit]
-Description=Video Recorder service
+Description=Video recorder service
 After=gstreamer.service
 Requires=gstreamer.service
 
