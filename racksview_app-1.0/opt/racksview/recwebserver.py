@@ -44,7 +44,7 @@ def list_files(subpath):
     items = sorted(os.listdir(folder_path))
     dirs = [item for item in items if os.path.isdir(os.path.join(folder_path, item))]
     files = [(item, os.path.getsize(os.path.join(folder_path, item)) / (1024 * 1024)) 
-             for item in items if os.path.isfile(os.path.join(folder_path, item))]
+             for item in items if os.path.isfile(os.path.join(folder_path, item)) and item.endswith('.mp4')]
 
     # Fix `../` link handling for top-level navigation
     parent_path = "/" if "/" not in subpath else "/" + subpath.rsplit("/", 1)[0]

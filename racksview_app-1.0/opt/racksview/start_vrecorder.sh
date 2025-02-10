@@ -37,9 +37,6 @@ do
       -t ${SEGMENT_DURATION} \
       -c:v libx264 -preset veryfast -b:v ${BITRATE}k \
       "${FULL_PATH}"
-    
-    # Make preview of the recording
-    ffmpeg -y -loglevel error -ss 00:00:01 -i "${FULL_PATH}" -vframes 1 -vf "scale=320:-1" -q:v 16 -update 1 "${TARGET_BASE}"/preview.jpg
 
     # If either flag exists, rename the file to include '-action'
     if [ -f "${START_FLAG}" ] || [ -f "${STOP_FLAG}" ]; then
