@@ -31,5 +31,7 @@ libcamerasrc name=src ! queue ! video/x-raw,framerate=1/1 ! tee name=t \
         clockoverlay time-format="%H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 20" xpos=5 ypos=-5 ! \
         videoconvert ! jpegenc quality=90 ! multipartmux ! queue ! \
         tcpserversink host=0.0.0.0 port=8012 \
-    t. ! queue ! videoscale ! video/x-raw,width=320,height=240 ! videoconvert ! \
-        jpegenc quality=30 ! multifilesink location="${TARGET_BASE}"/preview.jpg post-messages=true next-file=1 max-file-duration=60000000000
+    t. ! queue ! videorate ! video/x-raw,framerate=1/60 ! \
+        videoscale ! video/x-raw,width=320,height=240 ! videoconvert ! \
+        jpegenc quality=50 ! \
+        multifilesink location="${TARGET_BASE}/preview.jpg" post-messages=true next-file=0 max-file-duration=60000000000
