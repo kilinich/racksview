@@ -70,7 +70,7 @@ def list_files(subpath):
             </style>
         </head>
         <body>
-            <h3>{{ hostname }} <a href="{{ live_video_url }}" class="live-video">{{ hostname }} 🔴 Live Video</a></h3>
+            <h3>{{ hostname }} <a href="{{ live_video_url }}" class="live-video">🔴 Live Video</a></h3>
             <h3>Video recordings - <span style="color: gray;">{{ display_path }}</span></h3>
             <ul>
                 {% if subpath %}
