@@ -13,4 +13,4 @@ touch "${FLAGS_DIR}"/start.flg
 rm -f "${FLAGS_DIR}"/no_data.flg
 
 #beep
-python3 /opt/racksview/beep.py --config /etc/racksview/beep.ini --signal "door_open"
+#python3 /opt/racksview/beep.py --config /etc/racksview/beep.ini --signal "door_open"

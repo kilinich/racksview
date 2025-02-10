@@ -64,14 +64,18 @@ def list_files(subpath):
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>{{ hostname }} video recordings - {{ display_path }}</title>
             <style>
-                body { font-family: "Courier New", Courier, monospace; margin: 20px; }
+                body { font-family: "Courier New", Courier, monospace; margin: 20px; background-color: #121212; color: #e0e0e0; }
                 h3 { margin-bottom: 10px; }
                 ul { list-style-type: none; padding: 0; }
                 li { padding: 5px 0; font-size: 16px; }
                 .size { color: gray; font-size: 14px; margin-left: 10px; }
-                a { text-decoration: none; color: #0066cc; }
-                a:hover { color: #004499; }
+                a { text-decoration: none; color: #1e88e5; }
+                a:hover { color: #1565c0; }
                 .live-video { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+                .file-nothing { color: gray; }
+                .file-action { color: green; }
+                .file-in-progress { color: red; }
+                .file-unknown { color: yellow; }
             </style>
         </head>
         <body>
@@ -86,7 +90,17 @@ def list_files(subpath):
                     <li><a href="{{ '/' + (subpath + '/' + d if subpath else d) }}">📂{{ d }}</a></li>
                 {% endfor %}
                 {% for f, size in files %}
-                    <li>
+                    {% set file_class = '' %}
+                    {% if f.endswith('_nothing.mp4') %}
+                        {% set file_class = 'file-nothing' %}
+                    {% elif f.endswith('_action.mp4') %}
+                        {% set file_class = 'file-action' %}
+                    {% elif f.endswith('_in_progress.mp4') %}
+                        {% set file_class = 'file-in-progress' %}
+                    {% elif f.endswith('_unknown.mp4') %}
+                        {% set file_class = 'file-unknown' %}
+                    {% endif %}
+                    <li class="{{ file_class }}">
                         <a href="{{ '/' + (subpath + '/' + f if subpath else f) }}">📼{{ f }}</a>
                         <span class="size">({{ "%.2f"|format(size) }} MB)</span>
                     </li>
