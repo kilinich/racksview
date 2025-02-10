@@ -62,10 +62,24 @@ do
     fi
 
     # Check available disk space and delete oldest files if necessary
-    FREE_SPACE=$(df -m "${TARGET_BASE}" | awk 'NR==2 {print $4}')
-    if [ ${FREE_SPACE} -lt ${MIN_FREE_SPACE} ]; then
+    while true; do
+        FREE_SPACE=$(df -m "${TARGET_BASE}" | awk 'NR==2 {print $4}')
+        if [ ${FREE_SPACE} -ge ${MIN_FREE_SPACE} ]; then
+            break
+        fi
+
         echo "Low disk space detected, deleting oldest files..."
-        find "${TARGET_BASE}" -type f -name "*.mp4" -printf "%T@ %p\n" | sort -n | head -n 1 | cut -d' ' -f2 | xargs rm -f
-    fi
+        # Find and delete the oldest *nothing.mp4 file in sub-directories
+        OLDEST_FILE=$(find "${TARGET_BASE}" -type f -name "*nothing.mp4" -printf "%T@ %p\n" | sort -n | head -n 1 | cut -d' ' -f2)
+        if [ -n "${OLDEST_FILE}" ]; then
+            rm -f "${OLDEST_FILE}"
+        else
+            echo "No more files to delete."
+            break
+        fi
+        
+        # Remove empty directories
+        find "${TARGET_BASE}" -type d -empty -delete
+    done
     
 done
