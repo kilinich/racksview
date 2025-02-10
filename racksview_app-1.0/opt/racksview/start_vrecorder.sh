@@ -37,6 +37,9 @@ do
       -t ${SEGMENT_DURATION} \
       -c:v libx264 -preset veryfast -b:v ${BITRATE}k \
       "${FULL_PATH}"
+    
+    # Make preview of the recording
+    ffmpeg -y -loglevel error -ss 00:00:01 -i "${FULL_PATH}" -vframes 1 -vf "scale=320:-1" -q:v 16 -update 1 "${TARGET_BASE}"/preview.jpg
 
     # If either flag exists, rename the file to include '-action'
     if [ -f "${START_FLAG}" ] || [ -f "${STOP_FLAG}" ]; then
@@ -56,10 +59,11 @@ do
     # If STOP_FLAG exists, remove it (and START_FLAG too if it exists)
     if [ -f "${STOP_FLAG}" ]; then
         rm -f "${STOP_FLAG}"
-        if [ -f "${START_FLAG}" ]; then
-            rm -f "${START_FLAG}"
-        fi
+        rm -f "${START_FLAG}"
     fi
+
+    # Find incomplete files and delete them
+    find "${TARGET_DIR}" -type f -name "*_recording-in-progress.mp4" -delete
 
     # Check available disk space and delete oldest files if necessary
     while true; do
@@ -68,18 +72,51 @@ do
             break
         fi
 
-        echo "Low disk space detected, deleting oldest files..."
+        echo "Low disk space detected, deleting oldest empty files..."
         # Find and delete the oldest *nothing.mp4 file in sub-directories
         OLDEST_FILE=$(find "${TARGET_BASE}" -type f -name "*nothing.mp4" -printf "%T@ %p\n" | sort -n | head -n 1 | cut -d' ' -f2)
         if [ -n "${OLDEST_FILE}" ]; then
             rm -f "${OLDEST_FILE}"
         else
-            echo "No more files to delete."
+            echo "No more empty recordings to delete."
             break
         fi
-        
-        # Remove empty directories
-        find "${TARGET_BASE}" -type d -empty -delete
     done
     
+    while true; do
+        FREE_SPACE=$(df -m "${TARGET_BASE}" | awk 'NR==2 {print $4}')
+        if [ ${FREE_SPACE} -ge ${MIN_FREE_SPACE} ]; then
+            break
+        fi
+
+        echo "Low disk space detected, deleting oldest unknown files..."
+        # Find and delete the oldest *unknown.mp4 file in sub-directories
+        OLDEST_FILE=$(find "${TARGET_BASE}" -type f -name "*unknown.mp4" -printf "%T@ %p\n" | sort -n | head -n 1 | cut -d' ' -f2)
+        if [ -n "${OLDEST_FILE}" ]; then
+            rm -f "${OLDEST_FILE}"
+        else
+            echo "No more unknown recordings to delete."
+            break
+        fi
+    done
+
+    while true; do
+        FREE_SPACE=$(df -m "${TARGET_BASE}" | awk 'NR==2 {print $4}')
+        if [ ${FREE_SPACE} -ge ${MIN_FREE_SPACE} ]; then
+            break
+        fi
+
+        echo "Low disk space detected, deleting oldest files..."
+        # Find and delete the oldest *.mp4 file in sub-directories
+        OLDEST_FILE=$(find "${TARGET_BASE}" -type f -name "*.mp4" -printf "%T@ %p\n" | sort -n | head -n 1 | cut -d' ' -f2)
+        if [ -n "${OLDEST_FILE}" ]; then
+            rm -f "${OLDEST_FILE}"
+        else
+            echo "No more recordings to delete."
+            break
+        fi
+    done
+
+    # Remove empty directories
+    find "${TARGET_BASE}" -type d -empty -delete
 done

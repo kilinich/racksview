@@ -76,6 +76,7 @@ def list_files(subpath):
         </head>
         <body>
             <h3>{{ hostname }} <a href="{{ live_video_url }}" class="live-video">🔴 Live Video</a></h3>
+            <img src={{ BASEDIR }}/preview.jpg>
             <h3>Video recordings - <span style="color: gray;">{{ display_path }}</span></h3>
             <ul>
                 {% if subpath %}
