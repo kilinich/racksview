@@ -139,7 +139,7 @@ if __name__ == "__main__":
                     logging.info(f"Door state changed: {new_state}")
                     if new_state == "Opened":
                         subprocess.Popen(config["detection"]["run_on_open"], shell=True)
-                    elif new_state == "Closed":
+                    elif new_state == "Closed" & current_state != "Initializing":
                         subprocess.Popen(config["detection"]["run_on_close"], shell=True)
                     current_state = new_state
     except Exception as e:

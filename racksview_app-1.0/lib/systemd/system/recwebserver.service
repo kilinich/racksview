@@ -1,6 +1,6 @@
 [Unit]
 Description=Video Recording web server
-After=network.target
+After=vrecorder.service
 
 [Service]
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/recwebserver.log
