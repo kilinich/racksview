@@ -136,7 +136,9 @@ if __name__ == "__main__":
     try:
         while running:
             distance = read_distance(ser)
-            if distance is not None:
+            if distance == 65535:
+                subprocess.Popen(config["detection"]["run_on_no_data"], shell=True)
+            elif distance is not None:
                 measurements.append(distance)
                 new_state, baseline_distance, last_stable_time = detect_door_state(
                     measurements, baseline_distance, config["detection"], last_stable_time, current_state
@@ -149,6 +151,7 @@ if __name__ == "__main__":
                     elif new_state == "Closed" and current_state != "Initializing":
                         subprocess.Popen(config["detection"]["run_on_close"], shell=True)
                     current_state = new_state
+            
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
     finally:
