@@ -19,6 +19,7 @@ chmod 755 /opt/racksview/*.sh
 
 echo Restarting RacksView services...
 systemctl daemon-reload
+systemctl enable gstreamer.service webstreamerhigh.service webstreamerlow.service vrecorder.service doordetector.service recwebserver.service
 
 echo Starting GStreamer service...
 systemctl start gstreamer.service
