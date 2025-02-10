@@ -2,8 +2,8 @@ import os
 import argparse
 import configparser
 import socket
-from flask import Flask, send_from_directory, render_template_string
-from waitress import serve  # Import Waitress
+from flask import Flask, send_from_directory, render_template_string, request
+from waitress import serve  # Use Waitress
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Simple Flask file server")
@@ -18,7 +18,7 @@ if args.config and os.path.exists(args.config):
 BASEDIR = config.get("server", "basedir", fallback="/media/usb/video")
 PORT = config.getint("server", "port", fallback=80)
 
-# Get the hostname
+# Get the hostname of the server
 HOSTNAME = socket.gethostname()
 
 # Create Flask app
@@ -47,6 +47,10 @@ def list_files(subpath):
     # Format the displayed path
     display_path = "/" + subpath if subpath else "/"
 
+    # Get host without port (if needed)
+    base_host = request.host.split(":")[0]
+    live_video_url = f"http://{base_host}:8082/"
+
     return render_template_string("""
         <!DOCTYPE html>
         <html lang="en">
@@ -56,15 +60,17 @@ def list_files(subpath):
             <title>{{ hostname }} video recordings - {{ display_path }}</title>
             <style>
                 body { font-family: "Courier New", Courier, monospace; margin: 20px; }
-                h2 { margin-bottom: 10px; }
+                h3 { margin-bottom: 10px; }
                 ul { list-style-type: none; padding: 0; }
                 li { padding: 5px 0; font-size: 16px; }
                 .size { color: gray; font-size: 14px; margin-left: 10px; }
                 a { text-decoration: none; color: #0066cc; }
                 a:hover { color: #004499; }
+                .live-video { font-size: 18px; font-weight: bold; margin-bottom: 15px; display: block; }
             </style>
         </head>
         <body>
+            <h3><a href="{{ live_video_url }}" class="live-video">🔴 Live Video</a>
             <h3>{{ hostname }} video recordings - <span style="color: gray;">{{ display_path }}</span></h2>
             <ul>
                 {% if subpath %}
@@ -82,7 +88,7 @@ def list_files(subpath):
             </ul>
         </body>
         </html>
-    """, hostname=HOSTNAME, display_path=display_path, subpath=subpath, dirs=dirs, files=files, parent_path=parent_path)
+    """, hostname=HOSTNAME, display_path=display_path, subpath=subpath, dirs=dirs, files=files, parent_path=parent_path, live_video_url=live_video_url)
 
 @app.route("/<path:filename>")
 def serve_file(filename):
