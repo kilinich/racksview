@@ -10,6 +10,8 @@ START_FLAG="/opt/racksview/flags/start.flg"
 STOP_FLAG="/opt/racksview/flags/stop.flg"
 NO_DATA_FLAG="/opt/racksview/flags/no_data.flg"
 
+MIN_FREE_SPACE=1024            # Minimum free space (in MB) required on target device
+
 export HOSTNAME=$(hostname)
 echo "Starting VRecorder on ${HOSTNAME}..."
 
@@ -59,4 +61,11 @@ do
         fi
     fi
 
+    # Check available disk space and delete oldest files if necessary
+    FREE_SPACE=$(df -m "${TARGET_BASE}" | awk 'NR==2 {print $4}')
+    if [ ${FREE_SPACE} -lt ${MIN_FREE_SPACE} ]; then
+        echo "Low disk space detected, deleting oldest files..."
+        find "${TARGET_BASE}" -type f -name "*.mp4" -printf "%T@ %p\n" | sort -n | head -n 1 | cut -d' ' -f2 | xargs rm -f
+    fi
+    
 done

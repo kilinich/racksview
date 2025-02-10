@@ -3,6 +3,7 @@ Description=Video Recording web server
 After=vrecorder.service
 
 [Service]
+Type=Simple
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/recwebserver.log
 ExecStart=/usr/bin/python3 /opt/racksview/recwebserver.py --config /etc/racksview/recwebserver.ini
 Restart=on-failure

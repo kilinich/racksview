@@ -36,8 +36,9 @@ def load_config(config_path):
             "threshold_change": config.getint("detection", "threshold_change", fallback=50),
             "stable_std_dev": config.getint("detection", "stable_std_dev", fallback=5),
             "stable_duration": config.getint("detection", "stable_duration", fallback=300),  # 5 minutes
-            "run_on_open": config.get("detection", "run_on_open", fallback="startvideo.sh"),
-            "run_on_close": config.get("detection", "run_on_close", fallback="stopvideo.sh"),
+            "run_on_open": config.get("detection", "run_on_open", fallback="door_open.sh"),
+            "run_on_close": config.get("detection", "run_on_close", fallback="door_close.sh"),
+            "run_on_no_data": config.get("detection", "run_on_no_data", fallback="door_no_data.sh"),
         }
     }
 
@@ -56,6 +57,7 @@ def read_distance(ser):
     """Reads data from the sensor and returns the distance in mm."""
     buffer = bytearray()
     
+    start_time = time.time()
     while running:
         byte = ser.read(1)
         if byte:
@@ -78,6 +80,11 @@ def read_distance(ser):
                         continue
                     
                     return distance
+        
+        # Check for timeout
+        if time.time() - start_time > 60:
+            logging.warning("No data received for 1 minute. Returning 65535.")
+            return 65535
 
 def detect_door_state(measurements, baseline_distance, detection_config, last_stable_time, current_state):
     """Determines the door state based on measurement sequences."""
@@ -139,7 +146,7 @@ if __name__ == "__main__":
                     logging.info(f"Door state changed: {new_state}")
                     if new_state == "Opened":
                         subprocess.Popen(config["detection"]["run_on_open"], shell=True)
-                    elif new_state == "Closed" & current_state != "Initializing":
+                    elif new_state == "Closed" and current_state != "Initializing":
                         subprocess.Popen(config["detection"]["run_on_close"], shell=True)
                     current_state = new_state
     except Exception as e:
@@ -147,3 +154,4 @@ if __name__ == "__main__":
     finally:
         ser.close()
         logging.info("Serial port closed. Exiting.")
+        subprocess.Popen(config["detection"]["run_on_no_data"], shell=True)
