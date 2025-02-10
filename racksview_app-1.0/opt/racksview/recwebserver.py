@@ -2,8 +2,12 @@ import os
 import argparse
 import configparser
 import socket
+import logging
 from flask import Flask, send_from_directory, render_template_string, request
 from waitress import serve  # Use Waitress
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Simple Flask file server")
@@ -28,6 +32,7 @@ app = Flask(__name__)
 @app.route("/<path:subpath>")
 def list_files(subpath):
     folder_path = os.path.join(BASEDIR, subpath)
+    logging.info(f"Listing files in {folder_path}")
 
     if not os.path.exists(folder_path):
         return "Folder not found", 404
@@ -95,8 +100,9 @@ def serve_file(filename):
     """ Serve a file for download. """
     directory = os.path.dirname(filename)
     filename = os.path.basename(filename)
+    logging.info(f"Downloading file: {filename}")
     return send_from_directory(os.path.join(BASEDIR, directory), filename, as_attachment=True)
 
 if __name__ == "__main__":
-    print(f"Starting Waitress on port {PORT}...")
+    logging.info(f"Starting Waitress on port {PORT}...")
     serve(app, host="0.0.0.0", port=PORT)
