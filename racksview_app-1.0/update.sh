@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo Stopping RacksView services...
-systemctl stop doordetector.service webstreamerhigh.service webstreamerlow.service vrecorder.service gstreamer.service
+systemctl stop doordetector.service webstreamerhigh.service webstreamerlow.service vrecorder.service gstreamer.service recwebserver.service
 sleep 5
 
 echo Updating RacksView software...
@@ -30,5 +30,7 @@ echo Starting VRecorder service...
 systemctl start vrecorder.service
 echo Starting DoorDetector service...
 systemctl start doordetector.service
+echo Starting RecWebServer service...
+systemctl start recwebserver.service
 
 echo RacksView software update complete.
