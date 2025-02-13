@@ -9,7 +9,7 @@ import signal
 from collections import deque
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Global variable to track running state
 running = True
@@ -146,6 +146,7 @@ if __name__ == "__main__":
                 
                 if new_state != current_state:
                     logging.info(f"Door state changed: {new_state}")
+                    logging.debug(f"Measurements: {measurements}")
                     if new_state == "Opened":
                         subprocess.Popen(config["detection"]["run_on_open"], shell=True)
                     elif new_state == "Closed" and current_state != "Initializing":

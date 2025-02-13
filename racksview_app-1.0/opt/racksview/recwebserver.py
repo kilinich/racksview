@@ -67,20 +67,20 @@ def list_files(subpath):
                 body { font-family: "Courier New", Courier, monospace; margin: 20px; background-color: #121212; color: #e0e0e0; }
                 h3 { margin-bottom: 10px; }
                 ul { list-style-type: none; padding: 0; }
-                li { padding: 5px 0; font-size: 16px; }
+                li { padding: 1px 0; font-size: 16px; }  /* Reduced padding for compactness */
                 .size { color: gray; font-size: 14px; margin-left: 10px; }
-                a { text-decoration: none; color: #1e88e5; }
-                a:hover { color: #1565c0; }
-                .live-video { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
-                .file-nothing { color: gray; }
-                .file-action { color: green; }
-                .file-in-progress { color: red; }
-                .file-unknown { color: yellow; }
+                a { text-decoration: none; }
+                .live-video { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #e0e0e0; }
+                .file-nothing a { color: gray; }
+                .file-action a { color: red; }
+                .file-in-progress a { color: green; }
+                .file-unknown a { color: yellow; }
+                img { border: 1px solid white; }
             </style>
         </head>
         <body>
             <h3>{{ hostname }} <a href="{{ live_video_url }}" class="live-video">🔴 Live Video</a></h3>
-            <img src={{ BASEDIR }}/preview.jpg>
+            <img src="{{ BASEDIR }}/preview.jpg">
             <h3>Video recordings - <span style="color: gray;">{{ display_path }}</span></h3>
             <ul>
                 {% if subpath %}
@@ -91,13 +91,13 @@ def list_files(subpath):
                 {% endfor %}
                 {% for f, size in files %}
                     {% set file_class = '' %}
-                    {% if f.endswith('_nothing.mp4') %}
+                    {% if 'nothing' in f %}
                         {% set file_class = 'file-nothing' %}
-                    {% elif f.endswith('_action.mp4') %}
+                    {% elif 'action' in f %}
                         {% set file_class = 'file-action' %}
-                    {% elif f.endswith('_in_progress.mp4') %}
+                    {% elif 'in-progress' in f %}
                         {% set file_class = 'file-in-progress' %}
-                    {% elif f.endswith('_unknown.mp4') %}
+                    {% elif 'unknown' in f %}
                         {% set file_class = 'file-unknown' %}
                     {% endif %}
                     <li class="{{ file_class }}">
