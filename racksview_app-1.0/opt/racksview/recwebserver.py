@@ -69,7 +69,7 @@ def list_files(subpath):
                 ul { list-style-type: none; padding: 0; }
                 li { padding: 1px 0; font-size: 16px; }  /* Reduced padding for compactness */
                 .size { color: gray; font-size: 14px; margin-left: 10px; }
-                a { text-decoration: none; }
+                a { text-decoration: none; color: #e0e0e0; }
                 .live-video { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #e0e0e0; }
                 .file-nothing a { color: gray; }
                 .file-action a { color: red; }

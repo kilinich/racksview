@@ -4,15 +4,18 @@ echo Stopping RacksView services...
 systemctl stop doordetector.service webstreamerhigh.service webstreamerlow.service vrecorder.service gstreamer.service recwebserver.service
 sleep 5
 
+
 echo Updating RacksView software...
 rm -rf /opt/racksview/*
 rm -rf /etc/racksview/*
 rm -rf /var/log/racksview/*
 rm -rf /media/usb/video/*
+mkdir /media/usb/video
 
 cp -a ./etc/* /etc/
 cp -a ./opt/* /opt/
 cp -a ./lib/* /lib/
+cp -a ./var/* /var/
 
 echo Updating file permissions...
 chmod 755 /opt/racksview/*.sh
