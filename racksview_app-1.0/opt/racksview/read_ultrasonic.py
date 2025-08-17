@@ -67,8 +67,8 @@ def read_distance():
                     timestamps.append(now)
                     # Remove old values outside the averaging window, but always keep the latest value
                     while len(distances) > 1 and now - timestamps[0] > args.average:
-                        timestamps.pop(0)
-                        distances.pop(0)
+                        timestamps.popleft()
+                        distances.popleft()
                     avg_distance = int(round(sum(distances) / len(distances)))
                     # Calculate values_per_sec as number of values in the last 1 second interval
                     one_sec_ago = now - 1
