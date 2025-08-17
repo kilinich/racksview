@@ -80,6 +80,8 @@ def read_distance():
                     else:
                         jitter = 0
                     print(f"{distance},{avg_distance},{jitter},{values_per_sec}", flush=True)
+    except KeyboardInterrupt:
+        log_error("Keyboard interrupt received, exiting gracefully.")
     except Exception as e:
         log_error(f"Error during serial read: {e}")
     finally:
