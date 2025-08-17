@@ -1,8 +1,8 @@
 #!/bin/bash
 # This script starts the ultrasonic sensor reading process and sets up named pipes for communication.
 
-# Create /run/racksview directory if it doesn't exist
-DIR="/run/racksview"
+# Create /tmp/racksview directory if it doesn't exist
+DIR="/tmp/racksview"
 [[ -d "$DIR" ]] || mkdir -p "$DIR"
 
 # Create named pipes if they don't exist
