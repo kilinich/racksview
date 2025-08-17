@@ -13,7 +13,7 @@ def read_distance():
     parser.add_argument('-d', '--device', default='/dev/serial0', help='Serial device name (default: /dev/serial0)')
     parser.add_argument('-b', '--baudrate', type=int, default=115200, help='Baud rate (default: 115200)')
     parser.add_argument('-o', '--timeout', type=float, default=10, help='Timeout in seconds (default: 10)')
-    parser.add_argument('-a', '--average', type=float, default=2, help='Time in seconds (default: 2) to average the distance readings')
+    parser.add_argument('-a', '--average', type=float, default=5, help='Time in seconds (default: 5) to average the distance readings')
 
     args, _ = parser.parse_known_args()
 
@@ -46,6 +46,10 @@ def read_distance():
                     if data_h == 0xFF and data_l == 0xFE:
                         log_error("Co-frequency interference detected")
                         continue
+                    # Check for no object detected (0xFFFD)
+                    if data_h == 0xFF and data_l == 0xFD:
+                        # No object detected, just skip this reading
+                        continue
                     distance = (data_h << 8) + data_l
                     now = time.time()
                     distances.append(distance)
@@ -58,12 +62,11 @@ def read_distance():
                     values_per_sec = int(round(len(distances) / args.average))
                     # Calculate jitter (standard deviation of distances in the window)
                     if len(distances) > 1:
-                        mean = sum(distances) / len(distances)
-                        variance = sum((d - mean) ** 2 for d in distances) / len(distances)
-                        jitter = variance ** 0.5
+                        variance = sum((d - avg_distance) ** 2 for d in distances) / len(distances)
+                        jitter = int(round(variance ** 0.5))
                     else:
-                        jitter = 0.0
-                    print(f"{distance},{avg_distance},{values_per_sec},{jitter:.2f}", flush=True)
+                        jitter = 0
+                    print(f"{distance},{avg_distance},{jitter},{values_per_sec}", flush=True)
     except Exception as e:
         log_error(f"Error during serial read: {e}")
     finally:
