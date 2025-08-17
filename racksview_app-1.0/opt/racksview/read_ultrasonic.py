@@ -3,6 +3,7 @@ import sys
 import serial
 import argparse
 from collections import deque
+import time
 
 def log_error(message):
     print(f"{datetime.datetime.now()} - {message}", file=sys.stderr)
@@ -12,6 +13,8 @@ def read_distance():
     parser.add_argument('-d', '--device', default='/dev/serial0', help='Serial device name (default: /dev/serial0)')
     parser.add_argument('-b', '--baudrate', type=int, default=115200, help='Baud rate (default: 115200)')
     parser.add_argument('-o', '--timeout', type=float, default=10, help='Timeout in seconds (default: 10)')
+    parser.add_argument('-a', '--average', type=float, default=2, help='Time in seconds (default: 2) to average the distance readings')
+
     args, _ = parser.parse_known_args()
 
     try:
@@ -26,12 +29,14 @@ def read_distance():
     
     try:
         buffer = deque([0, 0, 0, 0], maxlen=4)
+        distances = []
+        timestamps = []
         while True:
             byte = ser.read(1)
             if not byte:
                 log_error("No data received from serial port within timeout")
                 sys.exit(2)
-                
+
             buffer.append(byte[0])
             if buffer[0] == 0xFF:
                 start_byte, data_h, data_l, checksum = buffer
@@ -42,7 +47,23 @@ def read_distance():
                         log_error("Co-frequency interference detected")
                         continue
                     distance = (data_h << 8) + data_l
-                    print(distance, flush=True)
+                    now = time.time()
+                    distances.append(distance)
+                    timestamps.append(now)
+                    # Remove old values outside the averaging window, but always keep the latest value
+                    while len(distances) > 1 and now - timestamps[0] > args.average:
+                        timestamps.pop(0)
+                        distances.pop(0)
+                    avg_distance = int(round(sum(distances) / len(distances)))
+                    values_per_sec = int(round(len(distances) / args.average))
+                    # Calculate jitter (standard deviation of distances in the window)
+                    if len(distances) > 1:
+                        mean = sum(distances) / len(distances)
+                        variance = sum((d - mean) ** 2 for d in distances) / len(distances)
+                        jitter = variance ** 0.5
+                    else:
+                        jitter = 0.0
+                    print(f"{distance},{avg_distance},{values_per_sec},{jitter:.2f}", flush=True)
     except Exception as e:
         log_error(f"Error during serial read: {e}")
     finally:
