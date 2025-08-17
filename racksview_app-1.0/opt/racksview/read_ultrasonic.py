@@ -17,6 +17,17 @@ def read_distance():
 
     args, _ = parser.parse_known_args()
 
+    # Check for incorrect values
+    if args.baudrate <= 0:
+        log_error("Baud rate must be a positive integer.")
+        sys.exit(1)
+    if args.timeout <= 0:
+        log_error("Timeout must be a positive number.")
+        sys.exit(1)
+    if args.average <= 0:
+        log_error("Average window must be a positive number.")
+        sys.exit(1)
+
     try:
         ser = serial.Serial(
             port=args.device,
@@ -59,7 +70,9 @@ def read_distance():
                         timestamps.pop(0)
                         distances.pop(0)
                     avg_distance = int(round(sum(distances) / len(distances)))
-                    values_per_sec = int(round(len(distances) / args.average))
+                    # Calculate values_per_sec as number of values in the last 1 second interval
+                    one_sec_ago = now - 1
+                    values_per_sec = sum(1 for t in timestamps if t >= one_sec_ago)
                     # Calculate jitter (standard deviation of distances in the window)
                     if len(distances) > 1:
                         variance = sum((d - avg_distance) ** 2 for d in distances) / len(distances)
