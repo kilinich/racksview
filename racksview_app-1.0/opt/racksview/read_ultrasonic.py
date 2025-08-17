@@ -40,8 +40,8 @@ def read_distance():
     
     try:
         buffer = deque([0, 0, 0, 0], maxlen=4)
-        distances = []
-        timestamps = []
+        distances = deque(maxlen=1000)
+        timestamps = deque(maxlen=1000)
         while True:
             byte = ser.read(1)
             if not byte:
