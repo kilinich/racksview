@@ -1,0 +1,21 @@
+#!/bin/bash
+
+export OVLABEL=$(hostname)-front
+
+# Start the gstreamer pipeline
+
+# This pipeline captures video from the camera, adds a text overlay with the hostname and current time,
+# scales the video to two different resolutions, encodes the video as jpeg, and sends the video over TCP to two different ports.
+
+gst-launch-1.0 -e \
+v4l2src device=/dev/video0 ! queue leaky=2 ! image/jpeg,width=1280,height=800,framerate=10/1 ! v4l2jpegdec ! videorate ! video/x-raw,framerate=1/1 ! tee name=t \
+    t. ! queue leaky=2 ! \
+        textoverlay text="$OVLABEL" valignment=top halignment=left font-desc="Sans, 10" xpos=10 ypos=10 ! \
+        clockoverlay time-format="%d-%m-%Y %H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 10" xpos=10 ypos=-10 ! \
+        v4l2jpegenc ! multipartmux ! \
+        tcpserversink host=0.0.0.0 port=9013 recover-policy=3 sync=false \
+    t. ! queue leaky=2 ! videorate ! video/x-raw,framerate=1/5 ! videoscale ! video/x-raw,width=320,height=240 ! \
+        textoverlay text="$OVLABEL" valignment=top halignment=left font-desc="Sans, 20" xpos=5 ypos=5 ! \
+        clockoverlay time-format="%H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 20" xpos=5 ypos=-5 ! \
+        v4l2jpegenc ! multipartmux ! \
+        tcpserversink host=0.0.0.0 port=9012 recover-policy=3 sync=false
