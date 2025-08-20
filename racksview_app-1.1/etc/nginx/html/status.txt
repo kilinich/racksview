@@ -1,0 +1,2 @@
+Door1 status: close
+Door2 status: open

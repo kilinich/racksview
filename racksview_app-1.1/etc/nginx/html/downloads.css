@@ -1,0 +1,28 @@
+<style type="text/css">
+body {
+    font-family: monospace;         /* Monospaced font for all text */
+    font-size: 16px;                /* Base font size */
+    color: #dddddd;                 /* Light text color for dark theme */
+    background-color: #1e1e1e;      /* Dark background */
+}
+h1 {
+    font-size: 18px;                /* Header size */
+    color: #ffffff;                 /* White header for visibility */
+}
+pre {
+    font-family: monospace;         /* Ensure monospaced for file list */
+    font-size: 14px;                /* List font size */
+    color: #cccccc;                 /* Slightly dimmer text for list */
+}
+a {
+    color: #00bfff;                 /* Link color (e.g., light blue) */
+    text-decoration: none;          /* Optional: Remove underline */
+}
+a:hover {
+    color: #00ff7f;                 /* Hover color (e.g., spring green) */
+    text-decoration: underline;
+}
+hr {
+    border-color: #333333;          /* Darker HR line for theme consistency */
+}
+</style>
