@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/gstreamer-usb.log
-ExecStart=/opt/racksview/bin/start_gstreamer_usb.sh
+ExecStart=/opt/racksview/start_gstreamer_usb.sh
 Restart=on-failure
 RestartSec=60
 StandardOutput=null
