@@ -1,0 +1,15 @@
+[Unit]
+Description=GStreamer capture from CSI camera
+After=network.target
+
+[Service]
+ExecStartPre=/usr/bin/rm -f /var/log/racksview/gstreamer-csi.log
+ExecStart=/opt/racksview/bin/start_gstreamer_csi.sh
+Restart=on-failure
+RestartSec=60
+StandardOutput=null
+StandardError=file:/var/log/racksview/gstreamer-csi.log
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

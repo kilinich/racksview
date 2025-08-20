@@ -9,7 +9,6 @@ ExecStart=/opt/racksview/start_vrecorder.sh
 Restart=on-failure
 StandardOutput=file:/var/log/racksview/vrecorder.log
 StandardError=inherit
-Environment=DISPLAY=:0
 
 [Install]
 WantedBy=multi-user.target
