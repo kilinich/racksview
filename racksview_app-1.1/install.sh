@@ -2,11 +2,12 @@
 
 set -e
 
-services=(
-    gstreamer-back
-    gstreamer-front
-    mdetector-back
-    mdetector-front
+enable_services=(
+    gstreamer-back.service
+    gstreamer-front.service
+    mdetector-back.service
+    mdetector-front.service
+    rvmanager.timer
 )
 
 APP_SRC="$(pwd)"
@@ -25,15 +26,12 @@ sudo chmod -R +x "$DEST_DIR/scripts"
 
 echo "Step 2: Installing systemd service files..."
 if [ -d "$APP_SRC/etc/systemd" ]; then
-    for service in "${services[@]}"; do
-        service_file="$APP_SRC/etc/systemd/${service}.service"
-        if [ -f "$service_file" ]; then
-            sudo cp "$service_file" "$SYSTEMD_DIR/"
-            echo " - Enabling and reloading service: ${service}.service"
-            sudo systemctl enable "${service}.service"
-        fi
-    done
+    sudo cp "$APP_SRC/etc/systemd/"*.* "$SYSTEMD_DIR/"
     sudo systemctl daemon-reload
+    for service in "${enable_services[@]}"; do
+        echo " - Enabling service: ${service}"
+        sudo systemctl enable "${service}"
+    done
 fi
 
 echo "Step 3: Creating /var/log/racksview and linking to $DEST_DIR/log..."
