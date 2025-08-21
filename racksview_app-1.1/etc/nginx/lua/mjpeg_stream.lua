@@ -16,8 +16,12 @@ local function stream_mjpeg(port, boundary)
     end
 
     -- Stream data in chunks with robust error handling
+    local count = 0
     local success, loop_err = pcall(function()
         while true do
+            count = count + 1
+            if count % 1000 == 0 then collectgarbage("collect") end
+
             local data, recv_err, partial = sock:receive(8192)  -- Efficient buffer size
             local chunk = data or partial
             if chunk then

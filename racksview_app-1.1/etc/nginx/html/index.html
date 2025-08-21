@@ -5,29 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Content Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .section { margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; }
-        .section h2 { margin-top: 0; }
-        iframe { width: 100%; height: 400px; border: none; } /* Adjust height as needed */
-        img { max-width: 100%; height: auto; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #181a1b;
+            color: #e0e0e0;
+        }
+        .section {
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            background-color: #232526;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .section h2, .section h3 {
+            margin-top: 0;
+            color: #ffcc00;
+        }
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            background-color: #181a1b;
+            color: #e0e0e0;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 4px;
+        }
+        h2 {
+            color: #ffcc00;
+        }
     </style>
 </head>
 <body>
-    <h1>Dashboard: RacksView</h1>
+    <h2>Dashboard: RacksView</h2>
     
     <div class="section">
-        <h2>Rack video</h2>
-        <img src="/stream2" alt="MJPEG Video Stream">
+        <h3>Rack video</h3>
+        <div style="display: flex; gap: 5px;"></div>
+            <img src="/preview-back" alt="Back view" width="320" height="240" style="border-width:1px;">
+            <img src="/preview-front" alt="Front view" width="320" height="240" style="border-width:1px;">
+        </div>
     </div>
     
     <div class="section">
-        <h2>Events list</h2>
-        <iframe src="/events/"></iframe> <!-- Assumes NGINX autoindex enabled on /downloads/ -->
+        <h3>Events list</h3>
+        <iframe src="/events/"></iframe> 
     </div>
     
     <div class="section">
-        <h2>Rack status</h2>
-        <iframe src="/status.txt"></iframe> <!-- Assumes NGINX serves /logs/mylog.txt as text/plain -->
+        <h3>Rack status</h3>
+        <iframe src="/status.txt"></iframe> 
     </div>
 </body>
 </html>

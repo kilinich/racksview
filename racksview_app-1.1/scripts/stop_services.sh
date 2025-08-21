@@ -1,4 +1,7 @@
 #!/bin/bash
 
-echo Stopping RacksView services...
-systemctl stop gstreamer-usb.service gstreamer-csi.service vr-recorder.service
+# Stop all services
+sudo systemctl stop gstreamer-back.service
+sudo systemctl stop gstreamer-front.service
+sudo systemctl stop mdetector-back.service
+sudo systemctl stop mdetector-front.service

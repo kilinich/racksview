@@ -1,0 +1,15 @@
+[Unit]
+Description=Ultrasonic motion detector on /dev/serial0
+After=network.target
+
+[Service]
+ExecStartPre=/usr/bin/rm -f /var/log/racksview/mdetector-back.log
+ExecStart=/opt/racksview/bin/start_mdetector_back.sh
+Restart=on-failure
+RestartSec=10
+StandardOutput=null
+StandardError=file:/var/log/racksview/mdetector-back.log
+MemoryMax=64M
+
+[Install]
+WantedBy=multi-user.target

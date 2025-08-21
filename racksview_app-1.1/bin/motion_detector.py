@@ -10,32 +10,36 @@ def log_error(message):
 
 def read_distance():
     parser = argparse.ArgumentParser(description="Read distance from ultrasonic sensor via serial port.")
-    parser.add_argument('-d', '--device', default='/dev/serial0', help='Serial device name (default: /dev/serial0)')
+    parser.add_argument('-p', '--port', type=str, default='/dev/serial0', help='Serial device name (default: /dev/serial0)')
     parser.add_argument('-b', '--baudrate', type=int, default=115200, help='Baud rate (default: 115200)')
-    parser.add_argument('-o', '--timeout', type=float, default=10, help='Timeout in seconds (default: 10)')
-    parser.add_argument('-a', '--average', type=float, default=5, help='Time in seconds (default: 5) to average the distance readings')
+    parser.add_argument('-a', '--average', type=int, default=5, help='Time in seconds (default: 5) to average the distance readings')
+    parser.add_argument('-j', '--jitter', type=int, default=50, help='Jitter value (default: 50) indicated motion detection')
+    parser.add_argument('-d', '--distance', type=int, default=300, help='Minimum distance (default: 300) for stable readings')
 
     args, _ = parser.parse_known_args()
 
     # Check for incorrect values
-    if args.baudrate <= 0:
-        log_error("Baud rate must be a positive integer.")
+    if args.baudrate <= 9600:
+        log_error("Baud rate must be greater than 9600.")
         sys.exit(1)
-    if args.timeout <= 0:
-        log_error("Timeout must be a positive number.")
-        sys.exit(1)
-    if args.average <= 0:
+    if args.average < 1:
         log_error("Average window must be a positive number.")
         sys.exit(1)
-
+    if args.jitter < 1:
+        log_error("Jitter value must be a positive integer.")
+        sys.exit(1)
+    if args.distance < 20:
+        log_error("Distance value must be at least 20.")
+        sys.exit(1)
+    
     try:
         ser = serial.Serial(
-            port=args.device,
+            port=args.port,
             baudrate=args.baudrate,
-            timeout=args.timeout
+            timeout=10
         )
     except serial.SerialException as e:
-        log_error(f"Error opening serial port {args.device}: {e}")
+        log_error(f"Error opening serial port {args.port}: {e}")
         sys.exit(1)
     
     try:
