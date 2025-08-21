@@ -12,7 +12,7 @@ services=(
 APP_SRC="$(cd "$(dirname "$0")/.." && pwd)"
 DEST_DIR="/opt/racksview"
 SYSTEMD_DIR="/usr/lib/systemd/system"
-NGINX_CONF_SRC="$APP_SRC/nginx.conf"
+NGINX_CONF_SRC="$APP_SRC/etc/nginx/config/nginx.conf"
 NGINX_CONF_DEST="/usr/local/openresty/nginx/conf/nginx.conf"
 
 echo "Step 1: Creating $DEST_DIR and copying bin and etc directories..."
@@ -22,9 +22,9 @@ sudo cp -r "$APP_SRC/etc" "$DEST_DIR/"
 sudo cp -r "$APP_SRC/scripts" "$DEST_DIR/"
 
 echo "Step 2: Installing systemd service files..."
-if [ -d "$APP_SRC/systemd" ]; then
+if [ -d "$APP_SRC/etc/systemd" ]; then
     for service in "${services[@]}"; do
-        service_file="$APP_SRC/systemd/${service}.service"
+        service_file="$APP_SRC/etc/systemd/${service}.service"
         if [ -f "$service_file" ]; then
             sudo cp "$service_file" "$SYSTEMD_DIR/"
             echo " - Enabling and reloading service: ${service}.service"
