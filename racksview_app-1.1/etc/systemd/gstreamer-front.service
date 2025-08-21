@@ -10,7 +10,7 @@ Restart=on-failure
 RestartSec=60
 StandardOutput=null
 StandardError=file:/var/log/racksview/gstreamer-front.log
-MemoryMax=256M
+MemoryMax=100M
 
 [Install]
 WantedBy=multi-user.target

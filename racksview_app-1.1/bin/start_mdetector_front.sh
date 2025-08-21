@@ -11,4 +11,9 @@ if [[ ! -p "$PIPE" ]]; then
     mkfifo "$PIPE"
 fi
 
-python3 /opt/racksview/bin/motion_detector.py --device /dev/serial1 > "$PIPE"
+# python3 /opt/racksview/bin/motion_detector.py --device /dev/serial1 > "$PIPE"
+
+while true; do
+    echo "300,300,0,7" > "$PIPE"
+    sleep 1
+done

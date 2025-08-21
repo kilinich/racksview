@@ -10,7 +10,7 @@ Restart=on-failure
 RestartSec=10
 StandardOutput=null
 StandardError=file:/var/log/racksview/mdetector-back.log
-MemoryMax=64M
+MemoryMax=50M
 
 [Install]
 WantedBy=multi-user.target

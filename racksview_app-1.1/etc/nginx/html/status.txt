@@ -1,2 +1,22 @@
-Door1 status: close
-Door2 status: open
+App Status:
+Front (CSI) Camera GStreamer: active (running)
+Back (USB) Camera GStreamer: active (running)
+Front Door Motion Detector: active (nothing)
+Back Door Motion Detector: active (triggered)
+
+Hostname: racksview
+Model: Raspberry Pi 3 Model B Rev 1.2
+OS: Raspbian GNU/Linux 11 (bullseye)
+Kernel: 5.15.84-v7+
+Uptime: 2 days, 4:12
+CPU Temp: 48.2°C
+CPU Usage: 12%
+RAM Used: 412MB / 976MB
+Disk Used: 3.2GB / 15GB
+IP Address: 192.168.1.42
+
+Service Status:
+ssh: active (running)
+nginx: active (running)
+bluetooth: inactive (disabled)
+wifi: inactive (disabled)
