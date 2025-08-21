@@ -9,7 +9,7 @@ services=(
     mdetector-front
 )
 
-APP_SRC="$(cd "$(dirname "$0")/.." && pwd)"
+APP_SRC="$(pwd)"
 DEST_DIR="/opt/racksview"
 SYSTEMD_DIR="/usr/lib/systemd/system"
 NGINX_CONF_SRC="$APP_SRC/etc/nginx/config/nginx.conf"
