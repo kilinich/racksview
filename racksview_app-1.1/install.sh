@@ -20,6 +20,8 @@ sudo mkdir -p "$DEST_DIR"
 sudo cp -r "$APP_SRC/bin" "$DEST_DIR/"
 sudo cp -r "$APP_SRC/etc" "$DEST_DIR/"
 sudo cp -r "$APP_SRC/scripts" "$DEST_DIR/"
+sudo chmod -R +x "$DEST_DIR/bin"
+sudo chmod -R +x "$DEST_DIR/scripts"
 
 echo "Step 2: Installing systemd service files..."
 if [ -d "$APP_SRC/etc/systemd" ]; then
