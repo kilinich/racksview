@@ -3,6 +3,7 @@ Description=Ultrasonic motion detector on /dev/serial1
 After=network.target
 
 [Service]
+ExecStartPre=/bin/sleep 2
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/mdetector-front.log
 ExecStart=/opt/racksview/bin/start_mdetector_front.sh
 Restart=on-failure

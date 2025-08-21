@@ -3,6 +3,7 @@ Description=GStreamer capture from CSI camera
 After=network.target
 
 [Service]
+ExecStartPre=/bin/sleep 2
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/gstreamer-back.log
 ExecStart=/opt/racksview/bin/start_gstreamer_back.sh
 Restart=on-failure
