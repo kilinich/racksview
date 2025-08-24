@@ -76,7 +76,6 @@ sudo openresty -s reload
 echo "Starting services..."
 for service in "${enable_services[@]}"; do
     echo " - Starting service: ${service}"
-    sleep 1
     sudo systemctl start "${service}"
 done
 

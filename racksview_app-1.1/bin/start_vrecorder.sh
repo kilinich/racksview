@@ -65,7 +65,7 @@ do
         # Run ffmpeg to record a segment, overwriting any existing file (-y)
         ffmpeg -y -loglevel warning -r 1 -i tcp://127.0.0.1:${SOURCE_PORT} \
           -t ${SEGMENT_DURATION} \
-          -c:v libx264 -preset veryfast -b:v ${BITRATE}k \
+          -c:v libx264 -preset ultrafast -max_alloc 50000000 -threads 1 -b:v ${BITRATE}k \
           "${FULL_PATH}${TEMP_NAME}.mp4"
 
         mv -f "${FULL_PATH}${TEMP_NAME}.mp4" "${FULL_PATH}.mp4"
