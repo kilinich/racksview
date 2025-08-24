@@ -59,13 +59,13 @@ if [ ! -L "$DEST_DIR/pipes" ]; then
 fi
 
 if [ -d "/media/usb" ]; then
-    sudo mkdir -p /media/usb/events
-    if [ ! -L "$DEST_DIR/var/events" ]; then
-        sudo rm -rf "$DEST_DIR/var/events"
-        sudo ln -s /media/usb/events "$DEST_DIR/var/events"
+    sudo mkdir -p /media/usb/video
+    if [ ! -L "$DEST_DIR/var/video" ]; then
+        sudo rm -rf "$DEST_DIR/var/video"
+        sudo ln -s /media/usb/video "$DEST_DIR/var/video"
     fi
 else
-    sudo mkdir -p "$DEST_DIR/var/events"
+    sudo mkdir -p "$DEST_DIR/var/video"
 fi
 
 echo "Copying nginx.conf to $NGINX_CONF_DEST..."
