@@ -19,21 +19,11 @@ local function get_kernel_version()
 end
 
 local function get_uptime()
-    local uptime_seconds = get_cmd_output("awk '{print int($1)}' /proc/uptime")
-    local seconds = tonumber(uptime_seconds)
-    if not seconds then return "N/A" end
-    local days = math.floor(seconds / 86400)
-    local hours = math.floor((seconds % 86400) / 3600)
-    local minutes = math.floor((seconds % 3600) / 60)
-    return string.format("%d days, %d hours, %d minutes", days, hours, minutes)
+    return get_cmd_output("uptime -p")
 end
 
 local function get_cpu_temp()
-    local temp = get_cmd_output("cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null")
-    if temp ~= "" and tonumber(temp) then
-        return string.format("%.1f °C", tonumber(temp)/1000)
-    end
-    return "N/A"
+    return get_cmd_output("vcgencmd measure_temp") .. get_cmd_output("vcgencmd get_throttled")
 end
 
 local function get_ram_usage()
@@ -63,8 +53,11 @@ local function get_disk_usage(device)
 end
 
 local function get_ip_address()
-    local ip = get_cmd_output("hostname -I | awk '{print $1}'")
-    return ip ~= "" and ip or "N/A"
+    return get_cmd_output("hostname -I")
+end
+
+local function get_CPU_usage()
+    return get_cmd_output("cat /proc/loadavg")
 end
 
 local function get_service_status(name)
@@ -81,6 +74,7 @@ local function plain_status()
     table.insert(lines, "OS: " .. get_os_version())
     table.insert(lines, "Kernel: " .. get_kernel_version())
     table.insert(lines, "Uptime: " .. get_uptime())
+    table.insert(lines, "CPU Load: " .. get_CPU_usage())
     table.insert(lines, "CPU Temp: " .. get_cpu_temp())
     table.insert(lines, "RAM Used: " .. get_ram_usage())
     table.insert(lines, "Disk Used: " .. get_disk_usage("/dev/mmcblk0p2"))
