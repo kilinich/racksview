@@ -1,119 +1,72 @@
 #!/bin/bash
 
 # Parameters
-SOURCE_PORT="8013"              # TCP port where the MJPEG stream is available
-TARGET_BASE="/media/usb/video"  # Base directory for recorded files
-SEGMENT_DURATION=300            # Duration (in seconds) for each segment
-BITRATE=50                      # Bitrate (in kbps) for libx264 encoding
+# Check and parse command-line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --port)
+            SOURCE_PORT="$2"
+            shift 2
+            ;;
+        --file)
+            FILE_NAME="$2"
+            shift 2
+            ;;
+        --flag)
+            START_FLAG="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
 
-START_FLAG="/opt/racksview/flags/start.flg"
-STOP_FLAG="/opt/racksview/flags/stop.flg"
-NO_DATA_FLAG="/opt/racksview/flags/no_data.flg"
+# Ensure all required parameters are set
+if [[ -z "${SOURCE_PORT}" || -z "${FILE_NAME}" || -z "${START_FLAG}" ]]; then
+    echo "Usage: $0 --port <source_port> --file <file_name> --flag <start_flag>"
+    exit 1
+fi
 
-MIN_FREE_SPACE=1024            # Minimum free space (in MB) required on target device
+# Configuration
+TARGET_BASE="/opt/racksview/var/video"
+SEGMENT_DURATION=300
+BITRATE=50
 
-export HOSTNAME=$(hostname)
-echo "Starting VRecorder on ${HOSTNAME}..."
+rm -f "${START_FLAG}"
 
 while true
-do
-    # Get current date/time components
-    YEAR=$(date +%Y)
-    MONTH=$(date +%m)
-    DAY=$(date +%d)
-    HOUR=$(date +%H)
-    MINUTE=$(date +%M)
+do    
+    # Wait for the start flag to be created
+    while [ ! -f "${START_FLAG}" ]; do
+        sleep 1
+    done
 
-    # Create target directory if it doesn't exist
-    TARGET_DIR="${TARGET_BASE}/${YEAR}/${MONTH}/${DAY}"
-    mkdir -p "${TARGET_DIR}" 2>/dev/null
+    if [ -f "${START_FLAG}" ]; then
 
-    # Build output file name with hours, minutes, and seconds
-    OUTPUT_FILE="${HOUR}-${MINUTE}_${HOSTNAME}_recording-in-progress.mp4"
-    FULL_PATH="${TARGET_DIR}/${OUTPUT_FILE}"
+        # Get current date/time components
+        YEAR=$(date +%Y)
+        MONTH=$(date +%m)
+        DAY=$(date +%d)
+        HOUR=$(date +%H)
+        MINUTE=$(date +%M)
 
-    # Run ffmpeg to record a 5-minute segment, overwriting any existing file (-y)
-    ffmpeg -y -loglevel warning -r 1 -i tcp://127.0.0.1:${SOURCE_PORT} \
-      -t ${SEGMENT_DURATION} \
-      -c:v libx264 -preset veryfast -b:v ${BITRATE}k \
-      "${FULL_PATH}"
+        # Create target directory if it doesn't exist
+        TARGET_DIR="${TARGET_BASE}/${YEAR}/${MONTH}/${DAY}"
+        mkdir -p "${TARGET_DIR}" 2>/dev/null
 
-    # If either flag exists, rename the file to include '-action'
-    if [ -f "${START_FLAG}" ] || [ -f "${STOP_FLAG}" ]; then
-        echo "Action detected, renaming file..."
-        ACTION_PATH="${TARGET_DIR}/${HOUR}-${MINUTE}_${HOSTNAME}_recording-action.mp4"
-        mv "${FULL_PATH}" "${ACTION_PATH}"
-    else if [ -f "${NO_DATA_FLAG}" ]; then
-            echo "No door data detected, renaming file..."
-            NO_DATA_PATH="${TARGET_DIR}/${HOUR}-${MINUTE}_${HOSTNAME}_recording-unknown.mp4"
-            mv "${FULL_PATH}" "${NO_DATA_PATH}"
-        else
-            FILE_PATH="${TARGET_DIR}/${HOUR}-${MINUTE}_${HOSTNAME}_recording-nothing.mp4"
-            mv "${FULL_PATH}" "${FILE_PATH}"
-        fi
-    fi
+        # Build output file name with hours, minutes, and seconds
+        OUTPUT_FILE="${HOUR}-${MINUTE}_${FILE_NAME}"
+        FULL_PATH="${TARGET_DIR}/${OUTPUT_FILE}"
 
-    # If STOP_FLAG exists, remove it (and START_FLAG too if it exists)
-    if [ -f "${STOP_FLAG}" ]; then
-        rm -f "${STOP_FLAG}"
+        # Run ffmpeg to record a segment, overwriting any existing file (-y)
+        ffmpeg -y -loglevel warning -r 1 -i tcp://127.0.0.1:${SOURCE_PORT} \
+          -t ${SEGMENT_DURATION} \
+          -c:v libx264 -preset veryfast -b:v ${BITRATE}k \
+          "${FULL_PATH}"
+
+        # Delete the flag after recording is finished
         rm -f "${START_FLAG}"
     fi
-
-    # Find incomplete files and delete them
-    find "${TARGET_DIR}" -type f -name "*_recording-in-progress.mp4" -delete
-
-    # Check available disk space and delete oldest files if necessary
-    while true; do
-        FREE_SPACE=$(df -m "${TARGET_BASE}" | awk 'NR==2 {print $4}')
-        if [ ${FREE_SPACE} -ge ${MIN_FREE_SPACE} ]; then
-            break
-        fi
-
-        echo "Low disk space detected, deleting oldest empty files..."
-        # Find and delete the oldest *nothing.mp4 file in sub-directories
-        OLDEST_FILE=$(find "${TARGET_BASE}" -type f -name "*nothing.mp4" -printf "%T@ %p\n" | sort -n | head -n 1 | cut -d' ' -f2)
-        if [ -n "${OLDEST_FILE}" ]; then
-            rm -f "${OLDEST_FILE}"
-        else
-            echo "No more empty recordings to delete."
-            break
-        fi
-    done
-    
-    while true; do
-        FREE_SPACE=$(df -m "${TARGET_BASE}" | awk 'NR==2 {print $4}')
-        if [ ${FREE_SPACE} -ge ${MIN_FREE_SPACE} ]; then
-            break
-        fi
-
-        echo "Low disk space detected, deleting oldest unknown files..."
-        # Find and delete the oldest *unknown.mp4 file in sub-directories
-        OLDEST_FILE=$(find "${TARGET_BASE}" -type f -name "*unknown.mp4" -printf "%T@ %p\n" | sort -n | head -n 1 | cut -d' ' -f2)
-        if [ -n "${OLDEST_FILE}" ]; then
-            rm -f "${OLDEST_FILE}"
-        else
-            echo "No more unknown recordings to delete."
-            break
-        fi
-    done
-
-    while true; do
-        FREE_SPACE=$(df -m "${TARGET_BASE}" | awk 'NR==2 {print $4}')
-        if [ ${FREE_SPACE} -ge ${MIN_FREE_SPACE} ]; then
-            break
-        fi
-
-        echo "Low disk space detected, deleting oldest files..."
-        # Find and delete the oldest *.mp4 file in sub-directories
-        OLDEST_FILE=$(find "${TARGET_BASE}" -type f -name "*.mp4" -printf "%T@ %p\n" | sort -n | head -n 1 | cut -d' ' -f2)
-        if [ -n "${OLDEST_FILE}" ]; then
-            rm -f "${OLDEST_FILE}"
-        else
-            echo "No more recordings to delete."
-            break
-        fi
-    done
-
-    # Remove empty directories
-    find "${TARGET_BASE}" -type d -empty -delete
 done

@@ -1,0 +1,15 @@
+[Unit]
+Description=VRecorder Front Service
+After=gstreamer-front.service
+Requires=gstreamer-front.service
+
+[Service]
+Type=simple
+ExecStart=/opt/racksvies/bin/start_vrecorder.sh --port 8013 --file recording-front.mp4 --flag /tmp/racksview/motion-front.flg
+Restart=on-failure
+ExecStartPre=/usr/bin/rm -f /var/log/racksview/vrecoder-front.log
+StandardOutput=append:/var/log/racksview/vrecorder-front.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

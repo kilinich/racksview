@@ -7,6 +7,8 @@ enable_services=(
     gstreamer-back.service
     mdetector-front.service
     mdetector-back.service
+    vrecorder-front.service
+    vrecorder-back.service
     rvmanager.timer
 )
 
@@ -43,21 +45,16 @@ if [ -d "$APP_SRC/systemd" ]; then
 fi
 
 echo "Creating /var/log/racksview and linking to $DEST_DIR/log..."
+sudo rm -rf /var/log/racksview/
 sudo mkdir -p /var/log/racksview
-sudo rm -rf /var/log/racksview/*
+
 sudo mkdir -p "$DEST_DIR/log"
 if [ ! -L "$DEST_DIR/log" ]; then
     sudo rm -rf "$DEST_DIR/log"
     sudo ln -s /var/log/racksview "$DEST_DIR/log"
 fi
 
-echo "Creating /tmp/racksview and linking to $DEST_DIR/pipes..."
-sudo mkdir -p /tmp/racksview
-if [ ! -L "$DEST_DIR/pipes" ]; then
-    sudo rm -rf "$DEST_DIR/pipes"
-    sudo ln -s /tmp/racksview "$DEST_DIR/pipes"
-fi
-
+echo "Setting up video storage directory..."
 if [ -d "/media/usb" ]; then
     sudo mkdir -p /media/usb/video
     if [ ! -L "$DEST_DIR/var/video" ]; then

@@ -3,4 +3,4 @@ Description=Restart GStreamer capture services
 
 [Service]
 Type=oneshot
-ExecStart=/bin/systemctl restart gstreamer-back.service gstreamer-front.service
+ExecStart=/bin/systemctl restart gstreamer-back.service gstreamer-front.service && /opt/racksview/bin/cleanup.sh

@@ -43,12 +43,8 @@ local function get_ram_usage()
     return "N/A"
 end
 
-local function get_disk_usage(device)
-    device = device or "/dev/sda"
-    local line = get_cmd_output("df -h | grep '^" .. device .. "' | head -1")
-    if line == "" then
-        return "N/A"
-    end
+local function get_disk_usage(folder)
+    local line = get_cmd_output("df -h " .. folder)
     local total, used = line:match("^%S+%s+(%S+)%s+(%S+)")
     if total and used then
         return string.format("%s GB / %s GB", used, total)
@@ -81,15 +77,17 @@ local function plain_status()
     table.insert(lines, "CPU Load: " .. get_CPU_usage())
     table.insert(lines, "CPU Temp: " .. get_cpu_temp())
     table.insert(lines, "RAM Used: " .. get_ram_usage())
-    table.insert(lines, "Disk Used: " .. get_disk_usage("/dev/mmcblk0p2"))
-    table.insert(lines, "USB Used: " .. get_disk_usage("/dev/sda1"))
+    table.insert(lines, "Main storage Used: " .. get_disk_usage("/opt/racksview"))
+    table.insert(lines, "Video storage Used: " .. get_disk_usage("/opt/racksview/var/video"))
     table.insert(lines, "")
     table.insert(lines, "Services Status:")
     local services = {
         "gstreamer-front.service",
         "gstreamer-back.service",
         "mdetector-front.service",
-        "mdetector-back.service"
+        "mdetector-back.service",
+        "vrecorder-front.service",
+        "vrecorder-back.service"
     }
     for _, svc in ipairs(services) do
         local status, uptime = get_service_status(svc)

@@ -10,11 +10,12 @@ def log_error(message):
 
 def read_distance():
     parser = argparse.ArgumentParser(description="Read distance from ultrasonic sensor via serial port.")
-    parser.add_argument('-p', '--port', type=str, default='/dev/serial0', help='Serial device name (default: /dev/serial0)')
-    parser.add_argument('-b', '--baudrate', type=int, default=115200, help='Baud rate (default: 115200)')
-    parser.add_argument('-a', '--average', type=int, default=5, help='Time in seconds (default: 5) to average the distance readings')
-    parser.add_argument('-j', '--jitter', type=int, default=50, help='Jitter value (default: 50) indicated motion detected')
-    parser.add_argument('-d', '--distance', type=int, default=300, help='Minimum distance (default: 300) to consider motion undetected')
+    parser.add_argument('--port', type=str, default='/dev/serial0', help='Serial device name (default: /dev/serial0)')
+    parser.add_argument('--baudrate', type=int, default=115200, help='Baud rate (default: 115200)')
+    parser.add_argument('--average', type=int, default=5, help='Time in seconds (default: 5) to average the distance readings')
+    parser.add_argument('--jitter', type=int, default=50, help='Jitter value (default: 50) indicated motion detected')
+    parser.add_argument('--distance', type=int, default=300, help='Minimum distance (default: 300) to consider motion undetected')
+    parser.add_argument('--flag', type=str, default='/tmp/flag', help='Named pipe for motion flags (default: /tmp/flag)')
 
     args, _ = parser.parse_known_args()
 
@@ -94,8 +95,17 @@ def read_distance():
                         motion_status = "undetected"
                     else:
                         motion_status = "detected"
-                    # Bash associative array declaration string with key-value pairs
-                    print(f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [dataset]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})", flush=True)
+                        with open(args.flag, "w") as flag_file:
+                            flag_file.write(
+                                f"distance={distances[-1]}\n"
+                                f"avg={avg_distance}\n"
+                                f"jitter={jitter}\n"
+                                f"dataset={values_in_window}\n"
+                                f"measured={nonzero_ratio:.2f}\n"
+                                f"motion={motion_status}\n"
+                            )
+                            flag_file.flush()
+                    print(f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [dataset]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})")
     except KeyboardInterrupt:
         log_error("Keyboard interrupt received, exiting gracefully.")
     except Exception as e:
