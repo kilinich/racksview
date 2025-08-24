@@ -55,8 +55,8 @@ local function get_disk_usage(device)
     if line == "" then
         return "N/A"
     end
-    local used, total = line:match("%s(%d+[%.,]?%d*)[GTMK]?%s+(%d+[%.,]?%d*)[GTMK]?%s+%d+%%")
-    if used and total then
+    local total, used = line:match("^%S+%s+(%S+)%s+(%S+)")
+    if total and used then
         return string.format("%s GB / %s GB", used, total)
     end
     return "N/A"
