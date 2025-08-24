@@ -96,7 +96,8 @@ local function plain_status()
         table.insert(lines, string.format("%s: %s, %s", svc, status, uptime))
     end
     table.insert(lines, "")
-    table.insert(lines, "Radio Status: " .. get_radio_status())
+    table.insert(lines, "Radio Status: ")
+    table.insert(lines, get_radio_status())
     return table.concat(lines, "\n")
 end
 
