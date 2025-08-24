@@ -19,26 +19,21 @@ local function get_kernel_version()
 end
 
 local function get_uptime()
-    return get_cmd_output("awk '{print int($1/3600)\":\"int(($1%3600)/60)\":\"int($1%60)}' /proc/uptime")
+    local uptime_seconds = get_cmd_output("awk '{print int($1)}' /proc/uptime")
+    local seconds = tonumber(uptime_seconds)
+    if not seconds then return "N/A" end
+    local days = math.floor(seconds / 86400)
+    local hours = math.floor((seconds % 86400) / 3600)
+    local minutes = math.floor((seconds % 3600) / 60)
+    return string.format("%d days, %d hours, %d minutes", days, hours, minutes)
 end
 
 local function get_cpu_temp()
     local temp = get_cmd_output("cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null")
     if temp ~= "" and tonumber(temp) then
-        return string.format("%.1f°C", tonumber(temp)/1000)
+        return string.format("%.1f °C", tonumber(temp)/1000)
     end
     return "N/A"
-end
-
-local function get_cpu_usage()
-    local stat = get_cmd_output("cat /proc/stat | grep '^cpu '")
-    local user, nice, system, idle, iowait, irq, softirq, steal = stat:match("cpu%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)")
-    if not user then return "N/A" end
-    local total = tonumber(user) + tonumber(nice) + tonumber(system) + tonumber(idle) + tonumber(iowait) + tonumber(irq) + tonumber(softirq) + tonumber(steal)
-    local busy = tonumber(user) + tonumber(nice) + tonumber(system) + tonumber(irq) + tonumber(softirq) + tonumber(steal)
-    if total == 0 then return "N/A" end
-    local usage = (busy / total) * 100
-    return string.format("%.1f%%", usage)
 end
 
 local function get_ram_usage()
@@ -82,7 +77,6 @@ local function plain_status()
     table.insert(lines, "Kernel: " .. get_kernel_version())
     table.insert(lines, "Uptime: " .. get_uptime())
     table.insert(lines, "CPU Temp: " .. get_cpu_temp())
-    table.insert(lines, "CPU Usage: " .. get_cpu_usage())
     table.insert(lines, "RAM Used: " .. get_ram_usage())
     table.insert(lines, "Disk Used: " .. get_disk_usage())
     table.insert(lines, "IP Address: " .. get_ip_address())

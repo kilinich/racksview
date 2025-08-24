@@ -3,10 +3,10 @@
 set -e
 
 enable_services=(
-    gstreamer-back.service
     gstreamer-front.service
-    mdetector-back.service
+    gstreamer-back.service
     mdetector-front.service
+    mdetector-back.service
     rvmanager.timer
 )
 

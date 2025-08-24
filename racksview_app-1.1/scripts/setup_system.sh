@@ -24,7 +24,7 @@ else
 fi
 
 echo "Checking $TIMESYNCD_CONF for NTP parameter..."
-
+sudo timedatectl set-timezone UTC
 # Check if there is an active (non-commented) line starting with NTP=
 if ! grep -q "^[[:space:]]*NTP=" "$TIMESYNCD_CONF"; then
     # Retrieve the default gateway IP address
