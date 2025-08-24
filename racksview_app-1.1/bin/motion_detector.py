@@ -102,7 +102,7 @@ def read_distance():
                                 f"avg={avg_distance} "
                                 f"jitter={jitter} "
                                 f"values={values_in_window} "
-                                f"measured={round(nonzero_ratio*100)}%\n"
+                                f"measured={round(nonzero_ratio*100)}%"
                             )
                             flag_file.flush()
                     print(f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [values]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})")
