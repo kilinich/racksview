@@ -32,6 +32,7 @@ fi
 
 # Configuration
 TARGET_BASE="/opt/racksview/var/video"
+TEMP_NAME="-in-progress"
 SEGMENT_DURATION=300
 BITRATE=50
 
@@ -65,9 +66,9 @@ do
         ffmpeg -y -loglevel warning -r 1 -i tcp://127.0.0.1:${SOURCE_PORT} \
           -t ${SEGMENT_DURATION} \
           -c:v libx264 -preset veryfast -b:v ${BITRATE}k \
-          "${FULL_PATH}".recording
+          "${FULL_PATH}${TEMP_NAME}.mp4"
 
-        mv -f "${FULL_PATH}".recording "${FULL_PATH}"
+        mv -f "${FULL_PATH}${TEMP_NAME}.mp4" "${FULL_PATH}.mp4"
 
         # Delete the flag after recording is finished
         rm -f "${START_FLAG}"
