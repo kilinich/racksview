@@ -32,7 +32,7 @@ fi
 
 # Configuration
 TARGET_BASE="/opt/racksview/var/video"
-TEMP_NAME="-in-progress"
+TEMP_NAME="_recording-in-progress"
 SEGMENT_DURATION=300
 BITRATE=50
 
