@@ -26,6 +26,10 @@ local function get_cpu_temp()
     return get_cmd_output("vcgencmd measure_temp") .. " " .. get_cmd_output("vcgencmd get_throttled")
 end
 
+local function get_radio_status()
+    return get_cmd_output("rfkill list all")
+end
+
 local function get_ram_usage()
     local meminfo = {}
     for line in io.lines("/proc/meminfo") do
@@ -91,6 +95,8 @@ local function plain_status()
         local status, uptime = get_service_status(svc)
         table.insert(lines, string.format("%s: %s, %s", svc, status, uptime))
     end
+    table.insert(lines, "")
+    table.insert(lines, "Radio Status: " .. get_radio_status())
     return table.concat(lines, "\n")
 end
 
