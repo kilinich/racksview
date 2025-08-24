@@ -97,12 +97,12 @@ def read_distance():
                         motion_status = "detected"
                         with open(args.flag, "w") as flag_file:
                             flag_file.write(
-                                f"detected {datetime.datetime.now().strftime('%H.%M.%S')}\n"
+                                f"detected {datetime.datetime.now().strftime('%H:%M.%S')}\n"
                                 f"dist={distances[-1]} "
                                 f"avg={avg_distance} "
                                 f"jitter={jitter} "
                                 f"values={values_in_window} "
-                                f"measured={nonzero_ratio:.2f}%\n"
+                                f"measured={round(nonzero_ratio*100)}%\n"
                             )
                             flag_file.flush()
                     print(f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [values]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})")
