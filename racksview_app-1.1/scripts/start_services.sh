@@ -1,4 +1,5 @@
 #!/bin/bash
+set +e
 
 # Start all services
 sudo systemctl start gstreamer-back.service

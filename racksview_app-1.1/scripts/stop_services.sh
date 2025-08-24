@@ -1,4 +1,5 @@
 #!/bin/bash
+set +e
 
 # Stop all services
 sudo systemctl stop gstreamer-back.service
