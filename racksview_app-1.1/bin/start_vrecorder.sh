@@ -1,7 +1,6 @@
 #!/bin/bash
 set +e
 
-# Parameters
 # Check and parse command-line arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
