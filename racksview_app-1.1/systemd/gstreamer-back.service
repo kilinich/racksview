@@ -3,11 +3,11 @@ Description=GStreamer capture from CSI camera
 After=network.target
 
 [Service]
-ExecStartPre=/bin/sleep 2
+ExecStartPre=/bin/sleep 5
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/gstreamer-back.log
 ExecStart=/opt/racksview/bin/start_gstreamer_back.sh
 Restart=on-failure
-RestartSec=60
+RestartSec=55
 StandardOutput=null
 StandardError=file:/var/log/racksview/gstreamer-back.log
 MemoryMax=100M
