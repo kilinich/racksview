@@ -123,8 +123,16 @@
     
     <div class="rack-status">
         <h3 class="rack-status-header">Status</h3>
-        <iframe src="/status"></iframe>
+        <iframe id="status-iframe" src="/status"></iframe>
     </div>
+    <script>
+        setInterval(function() {
+            var iframe = document.getElementById('status-iframe');
+            if (iframe) {
+                iframe.src = iframe.src;
+            }
+        }, 10000);
+    </script>
     
     <div class="events-list">
         <h3 class="events-list-header">Events</h3>
