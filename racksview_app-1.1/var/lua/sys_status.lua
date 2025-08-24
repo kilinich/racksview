@@ -83,8 +83,8 @@ end
 
 local function plain_status()
     local lines = {}
-    table.insert(lines, "Motion: " .. get_motion_status_front())
-    table.insert(lines, "Motion: " .. get_motion_status_back())
+    table.insert(lines, "Motion-front: " .. get_motion_status_front())
+    table.insert(lines, "Motion-back: " .. get_motion_status_back())
     table.insert(lines, "")
     table.insert(lines, "Hostname: " .. get_hostname())
     table.insert(lines, "IP Address: " .. get_ip_address())

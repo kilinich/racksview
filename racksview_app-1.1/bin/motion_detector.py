@@ -97,16 +97,15 @@ def read_distance():
                         motion_status = "detected"
                         with open(args.flag, "w") as flag_file:
                             flag_file.write(
-                                f"datetime={datetime.datetime.now().isoformat()}\n"
-                                f"distance={distances[-1]}\n"
-                                f"avg={avg_distance}\n"
-                                f"jitter={jitter}\n"
-                                f"dataset={values_in_window}\n"
-                                f"measured={nonzero_ratio:.2f}\n"
-                                f"motion={motion_status}\n"
+                                f"detected {datetime.datetime.now().strftime('%H.%M.%S')}\n"
+                                f"dist={distances[-1]} "
+                                f"avg={avg_distance} "
+                                f"jitter={jitter} "
+                                f"values={values_in_window} "
+                                f"measured={nonzero_ratio:.2f}%\n"
                             )
                             flag_file.flush()
-                    print(f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [dataset]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})")
+                    print(f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [values]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})")
     except KeyboardInterrupt:
         log_error("Keyboard interrupt received, exiting gracefully.")
     except Exception as e:
