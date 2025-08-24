@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TMP_DIR="/tmp/racksview"
-FLAG="$TMP_DIR/motion_back.flg"
+FLAG="$TMP_DIR/motion-back.flg"
 
 # Ensure the TMP_DIR directory exists
 mkdir -p "$TMP_DIR"

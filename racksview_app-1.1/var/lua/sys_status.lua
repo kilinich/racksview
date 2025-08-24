@@ -67,8 +67,20 @@ local function get_service_status(name)
     return status, uptime or "N/A"
 end
 
+local function get_motion_status()
+    local f = io.open("/tmp/racksview/motion-front.flg", "r")
+    local front = f and f:read("*a") or "undetected"
+    if f then f:close() end
+    f = io.open("/tmp/racksview/motion-back.flg", "r")
+    local back = f and f:read("*a") or "undetected"
+    if f then f:close() end
+    return front, back
+end
+
 local function plain_status()
     local lines = {}
+    table.insert(lines, "Motion: " .. get_motion_status())
+    table.insert(lines, "")
     table.insert(lines, "Hostname: " .. get_hostname())
     table.insert(lines, "IP Address: " .. get_ip_address())
     table.insert(lines, "OS: " .. get_os_version())
