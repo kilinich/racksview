@@ -54,7 +54,7 @@ do
         MINUTE=$(date +%M)
 
         # Create target directory if it doesn't exist
-        TARGET_DIR="${TARGET_BASE}/${YEAR}/${MONTH}/${DAY}"
+        TARGET_DIR="${TARGET_BASE}/${YEAR}-${MONTH}-${DAY}"
         mkdir -p "${TARGET_DIR}" 2>/dev/null
 
         # Build output file name with hours, minutes, and seconds
