@@ -49,8 +49,12 @@ local function get_ram_usage()
     return "N/A"
 end
 
-local function get_disk_usage()
-    local line = get_cmd_output("df -h / | tail -1")
+local function get_disk_usage(device)
+    device = device or "/dev/sda"
+    local line = get_cmd_output("df -h | grep '^" .. device .. "' | head -1")
+    if line == "" then
+        return "N/A"
+    end
     local used, total = line:match("%s(%d+[%.,]?%d*)[GTMK]?%s+(%d+[%.,]?%d*)[GTMK]?%s+%d+%%")
     if used and total then
         return string.format("%s GB / %s GB", used, total)
@@ -73,13 +77,14 @@ end
 local function plain_status()
     local lines = {}
     table.insert(lines, "Hostname: " .. get_hostname())
+    table.insert(lines, "IP Address: " .. get_ip_address())
     table.insert(lines, "OS: " .. get_os_version())
     table.insert(lines, "Kernel: " .. get_kernel_version())
     table.insert(lines, "Uptime: " .. get_uptime())
     table.insert(lines, "CPU Temp: " .. get_cpu_temp())
     table.insert(lines, "RAM Used: " .. get_ram_usage())
-    table.insert(lines, "Disk Used: " .. get_disk_usage())
-    table.insert(lines, "IP Address: " .. get_ip_address())
+    table.insert(lines, "Disk Used: " .. get_disk_usage("/dev/sda"))
+    table.insert(lines, "USB Used: " .. get_disk_usage("/dev/sdb"))
     table.insert(lines, "")
     table.insert(lines, "Services Status:")
     local services = {
