@@ -1,4 +1,5 @@
 #!/bin/bash
+set +e
 
 # Parameters
 # Check and parse command-line arguments

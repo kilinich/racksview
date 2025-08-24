@@ -1,16 +1,21 @@
 #!/bin/bash
+set +e
 
 services=(
-    gstreamer-back
-    gstreamer-front
-    mdetector-back
-    mdetector-front
+    gstreamer-back.service
+    gstreamer-front.service
+    mdetector-back.service
+    mdetector-front.service
+    vrecorder-back.service
+    vrecorder-front.service
+    rvmanager.service
+    rvmanager.timer
 )
 
 for svc in "${services[@]}"; do
-    sudo systemctl stop "$svc.service"
-    sudo systemctl disable "$svc.service"
-    sudo rm "/usr/lib/systemd/system/$svc.service"
+    sudo systemctl stop "$svc"
+    sudo systemctl disable "$svc"
+    sudo rm "/usr/lib/systemd/system/$svc"
 done
 
 sudo systemctl daemon-reload

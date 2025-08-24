@@ -15,7 +15,7 @@ def read_distance():
     parser.add_argument('--average', type=int, default=5, help='Time in seconds (default: 5) to average the distance readings')
     parser.add_argument('--jitter', type=int, default=50, help='Jitter value (default: 50) indicated motion detected')
     parser.add_argument('--distance', type=int, default=300, help='Minimum distance (default: 300) to consider motion undetected')
-    parser.add_argument('--flag', type=str, default='/tmp/flag', help='Named pipe for motion flags (default: /tmp/flag)')
+    parser.add_argument('--flag', type=str, default='/tmp/motion.flg', help='Named pipe for motion flags (default: /tmp/motion.flg)')
 
     args, _ = parser.parse_known_args()
 
@@ -97,6 +97,7 @@ def read_distance():
                         motion_status = "detected"
                         with open(args.flag, "w") as flag_file:
                             flag_file.write(
+                                f"datetime={datetime.datetime.now().isoformat()}\n"
                                 f"distance={distances[-1]}\n"
                                 f"avg={avg_distance}\n"
                                 f"jitter={jitter}\n"
