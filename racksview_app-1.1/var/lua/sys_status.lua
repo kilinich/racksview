@@ -44,7 +44,7 @@ local function get_ram_usage()
 end
 
 local function get_disk_usage(folder)
-    local line = get_cmd_output("df -h " .. folder)
+    local line = get_cmd_output("df -h " .. folder .. " | tail -n 1")
     local total, used = line:match("^%S+%s+(%S+)%s+(%S+)")
     if total and used then
         return string.format("%s GB / %s GB", used, total)
