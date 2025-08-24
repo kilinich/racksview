@@ -32,6 +32,7 @@ fi
 
 # Configuration
 TARGET_BASE="/opt/racksview/var/video"
+TEMP_DIR="/tmp/racksview"
 SEGMENT_DURATION=300
 BITRATE=50
 
@@ -59,13 +60,17 @@ do
 
         # Build output file name with hours, minutes, and seconds
         OUTPUT_FILE="${HOUR}-${MINUTE}_${FILE_NAME}"
+        TEMP_PATH="${TEMP_DIR}/${OUTPUT_FILE}"
         FULL_PATH="${TARGET_DIR}/${OUTPUT_FILE}"
 
         # Run ffmpeg to record a segment, overwriting any existing file (-y)
         ffmpeg -y -loglevel warning -r 1 -i tcp://127.0.0.1:${SOURCE_PORT} \
           -t ${SEGMENT_DURATION} \
           -c:v libx264 -preset veryfast -b:v ${BITRATE}k \
-          "${FULL_PATH}"
+          "${TEMP_PATH}"
+
+        # Move the temporary file to the final destination
+        mv "${TEMP_PATH}" "${FULL_PATH}"
 
         # Delete the flag after recording is finished
         rm -f "${START_FLAG}"
