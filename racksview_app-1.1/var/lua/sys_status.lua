@@ -23,7 +23,7 @@ local function get_uptime()
 end
 
 local function get_cpu_temp()
-    return get_cmd_output("vcgencmd measure_temp") .. get_cmd_output("vcgencmd get_throttled")
+    return get_cmd_output("vcgencmd measure_temp") .. " " .. get_cmd_output("vcgencmd get_throttled")
 end
 
 local function get_ram_usage()
