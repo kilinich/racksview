@@ -5,7 +5,7 @@ After=network.target
 [Service]
 ExecStartPre=/bin/sleep 5
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/gstreamer-back.log
-ExecStart=/opt/racksview/bin/start_gstreamer_back.sh
+ExecStart=/opt/racksview/bin/start_gstreamer.sh --camera CSI --porthigh 8013 --portlow 8012 --label ${HOSTNAME}-back
 Restart=on-failure
 RestartSec=55
 StandardOutput=null

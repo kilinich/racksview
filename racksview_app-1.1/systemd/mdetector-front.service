@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/mdetector-front.log
-ExecStart=/opt/racksview/bin/start_mdetector_front.sh
+ExecStart=/opt/racksview/bin/motion_detector.bin --port /dev/serial1 --flag /opt/racksview/var/motion_front.flg
 Restart=on-failure
 RestartSec=10
 StandardOutput=null
