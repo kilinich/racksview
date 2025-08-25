@@ -34,12 +34,26 @@ if [[ -z "${SOURCE_PORT}" || -z "${FILE_NAME}" || -z "${START_FLAG}" || -z "${ST
 fi
 
 # Configuration
-RUN_ON_START_REC="/opt/racksview/bin/start_recording.sh"
-RUN_ON_STOP_REC="/opt/racksview/bin/stop_recording.sh"
+RUN_ON_START_REC="/opt/racksview/bin/on_start_recording.sh"
+RUN_ON_STOP_REC="/opt/racksview/bin/on_stop_recording.sh"
 TARGET_BASE="/opt/racksview/var/video"
 TEMP_NAME="_recording-in-progress"
 SEGMENT_DURATION=300
 BITRATE=100
+
+# Log parameters and config to stdout
+echo "Starting vrecorder with the following parameters:"
+echo "  SOURCE_PORT: ${SOURCE_PORT}"
+echo "  FILE_NAME: ${FILE_NAME}"
+echo "  START_FLAG: ${START_FLAG}"
+echo "  STOP_FLAG: ${STOP_FLAG}"
+echo "Configuration:"
+echo "  RUN_ON_START_REC: ${RUN_ON_START_REC}"
+echo "  RUN_ON_STOP_REC: ${RUN_ON_STOP_REC}"
+echo "  TARGET_BASE: ${TARGET_BASE}"
+echo "  TEMP_NAME: ${TEMP_NAME}"
+echo "  SEGMENT_DURATION: ${SEGMENT_DURATION}"
+echo "  BITRATE: ${BITRATE}"
 
 # Initialize flags
 rm -f "${START_FLAG}"
