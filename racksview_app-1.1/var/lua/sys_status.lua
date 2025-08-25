@@ -87,7 +87,7 @@ local function get_motion_status(flag, unflag)
     return result
 end
 
-local function plain_status()
+local function plain_status_dual()
     local lines = {}
     table.insert(lines, "Motion-front:")
     table.insert(lines, get_motion_status("/opt/racksview/var/motion-front.flg","/opt/racksview/var/no-motion-front.flg"))
@@ -125,6 +125,39 @@ local function plain_status()
     return table.concat(lines, "\n")
 end
 
+local function plain_status_single()
+    local lines = {}
+    table.insert(lines, "Motion:")
+    table.insert(lines, get_motion_status("/opt/racksview/var/motion-back.flg","/opt/racksview/var/no-motion-back.flg"))
+    table.insert(lines, "")
+    table.insert(lines, "Services Status:")
+    local services = {
+        "gstreamer-back.service",
+        "mdetector-back.service",
+        "vrecorder-back.service"
+    }
+    for _, svc in ipairs(services) do
+        local status, uptime = get_service_status(svc)
+        table.insert(lines, string.format("%s: %s, %s", svc, status, uptime))
+    end
+    table.insert(lines, "")
+    table.insert(lines, "Hostname: " .. get_hostname())
+    table.insert(lines, "IP Address: " .. get_ip_address())
+    table.insert(lines, "OS: " .. get_os_version())
+    table.insert(lines, "Kernel: " .. get_kernel_version())
+    table.insert(lines, "Uptime: " .. get_uptime())
+    table.insert(lines, "CPU Load: " .. get_CPU_usage())
+    table.insert(lines, "CPU Temp: " .. get_cpu_temp())
+    table.insert(lines, "RAM Used: " .. get_ram_usage())
+    table.insert(lines, "Main storage Used: " .. get_disk_usage("/opt/racksview"))
+    table.insert(lines, "Video storage Used: " .. get_disk_usage("/opt/racksview/var/video"))
+    table.insert(lines, "")
+    table.insert(lines, "Radio Status: ")
+    table.insert(lines, get_radio_status())
+    return table.concat(lines, "\n")
+end
+
 return {
-    plain_status = plain_status
+    plain_status_dual = plain_status_dual,
+    plain_status_single = plain_status_single
 }
