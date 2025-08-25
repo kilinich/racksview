@@ -67,24 +67,17 @@ local function get_service_status(name)
     return status, uptime or "N/A"
 end
 
-local function get_motion_status_front()
-    local f = io.open("/tmp/racksview/motion-front.flg", "r")
-    local front = f and f:read("*a") or "undetected"
+local function get_motion_status(flag)
+    local f = io.open(flag, "r")
+    local stats = f and f:read("*a") or "undetected"
     if f then f:close() end
-    return front
-end
-
-local function get_motion_status_back()
-    local f = io.open("/tmp/racksview/motion-back.flg", "r")
-    local back = f and f:read("*a") or "undetected"
-    if f then f:close() end
-    return back
+    return stats
 end
 
 local function plain_status()
     local lines = {}
-    table.insert(lines, "Motion-front: " .. get_motion_status_front())
-    table.insert(lines, "Motion-back: " .. get_motion_status_back())
+    table.insert(lines, "Motion-front: " .. get_motion_status_front("/opt/racksview/var/motion-front.flg"))
+    table.insert(lines, "Motion-back: " .. get_motion_status_back("/opt/racksview/var/motion-back.flg"))
     table.insert(lines, "")
     table.insert(lines, "Services Status:")
     local services = {
