@@ -39,7 +39,7 @@ RUN_ON_STOP_REC="/opt/racksview/bin/on_stop_recording.sh"
 TARGET_BASE="/opt/racksview/var/video"
 TEMP_NAME="_recording-in-progress"
 SEGMENT_DURATION=300
-BITRATE=100
+BITRATE=50
 
 # Log parameters and config to stdout
 echo "Starting vrecorder with the following parameters:"
@@ -86,7 +86,7 @@ do
             # Run ffmpeg to record a segment, overwriting any existing file (-y)
             ffmpeg -y -loglevel warning -r 1 -i tcp://127.0.0.1:${SOURCE_PORT} \
             -t ${SEGMENT_DURATION} \
-            -c:v libx264 -preset ultrafast -threads 1 -b:v ${BITRATE}k \
+            -c:v libx264 -preset veryfast -threads 1 -b:v ${BITRATE}k \
             "${FULL_PATH}${TEMP_NAME}.mp4"
 
             mv -f "${FULL_PATH}${TEMP_NAME}.mp4" "${FULL_PATH}.mp4"
