@@ -13,7 +13,7 @@ enable_services=(
 )
 
 echo "Removing old services..."
-./scripts/remove_old_services.sh || true
+bash ./scripts/remove_old_services.sh || true
 
 echo "Stopping services before installation..."
 for service in "${enable_services[@]}"; do
