@@ -4,6 +4,7 @@ import serial
 import argparse
 from collections import deque
 import time
+import os
 
 def log_error(message):
     print(f"{datetime.datetime.now()} - {message}", file=sys.stderr)
@@ -15,7 +16,9 @@ def read_distance():
     parser.add_argument('--average', type=int, default=5, help='Time in seconds (default: 5) to average the distance readings')
     parser.add_argument('--jitter', type=int, default=50, help='Jitter value (default: 50) indicated motion detected')
     parser.add_argument('--distance', type=int, default=300, help='Minimum distance (default: 300) to consider motion undetected')
-    parser.add_argument('--flag', type=str, default='/tmp/motion.flg', help='Named pipe for motion flags (default: /tmp/motion.flg)')
+    parser.add_argument('--flag', type=str, default='/tmp/motion.flg', help='Name for motion flags (default: /tmp/motion.flg)')
+    parser.add_argument('--unflag', type=str, default='/tmp/no-motion.flg', help='Name for no motion flags (default: /tmp/no-motion.flg)')
+
 
     args, _ = parser.parse_known_args()
 
@@ -32,6 +35,14 @@ def read_distance():
     if args.distance < 20:
         log_error("Distance value must be at least 20.")
         sys.exit(1)
+        
+    # Delete old flag files on start
+    for flag_file in [args.flag, args.unflag]:
+        try:
+            if os.path.exists(flag_file):
+                os.remove(flag_file)
+        except Exception as e:
+            log_error(f"Could not remove flag file {flag_file}: {e}")
 
     try:
         ser = serial.Serial(
@@ -92,19 +103,36 @@ def read_distance():
                     if time.time() - init_time < args.average:
                         motion_status = "initializing"
                     elif (jitter < args.jitter and avg_distance < args.distance and values_in_window > args.average and nonzero_ratio >= 1/3):
+                        # Motion undetected
+                        if motion_status == "detected":
+                            # Flag switching from detected to undetected
+                            with open(args.unflag, "w") as unflag_file:
+                                unflag_file.write(
+                                    f"undetected {datetime.datetime.now().strftime('%H:%M.%S')} "
+                                    f"dist={distances[-1]} "
+                                    f"avg={avg_distance} "
+                                    f"jitter={jitter} "
+                                    f"values={values_in_window} "
+                                    f"measured={round(nonzero_ratio*100)}%"
+                                )
+                                unflag_file.flush()
                         motion_status = "undetected"
                     else:
+                        # Motion detected
+                        if os.path.exists(args.unflag):
+                            os.remove(args.unflag)
+                        if motion_status == "undetected" or motion_status == "initializing":
+                            with open(args.flag, "w") as flag_file:
+                                flag_file.write(
+                                    f"detected {datetime.datetime.now().strftime('%H:%M.%S')} "
+                                    f"dist={distances[-1]} "
+                                    f"avg={avg_distance} "
+                                    f"jitter={jitter} "
+                                    f"values={values_in_window} "
+                                    f"measured={round(nonzero_ratio*100)}%"
+                                )
+                                flag_file.flush()
                         motion_status = "detected"
-                        with open(args.flag, "w") as flag_file:
-                            flag_file.write(
-                                f"detected {datetime.datetime.now().strftime('%H:%M.%S')} "
-                                f"dist={distances[-1]} "
-                                f"avg={avg_distance} "
-                                f"jitter={jitter} "
-                                f"values={values_in_window} "
-                                f"measured={round(nonzero_ratio*100)}%"
-                            )
-                            flag_file.flush()
                     print(f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [values]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})")
     except KeyboardInterrupt:
         log_error("Keyboard interrupt received, exiting gracefully.")
