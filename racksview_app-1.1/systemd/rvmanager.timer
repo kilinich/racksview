@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily launch smanager at 00:00
+
+[Timer]
+OnCalendar=*-*-* 00:00:00
+Persistent=true
+Unit=rvmanager.service
+
+[Install]
+WantedBy=timers.target

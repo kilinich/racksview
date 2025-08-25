@@ -1,0 +1,16 @@
+[Unit]
+Description=GStreamer capture from CSI camera
+After=network.target
+
+[Service]
+ExecStartPre=/bin/sleep 5
+ExecStartPre=/usr/bin/rm -f /var/log/racksview/gstreamer-back.log
+ExecStart=/opt/racksview/bin/start_gstreamer.sh --camera CSI --porthigh 8013 --portlow 8012 --label back
+Restart=on-failure
+RestartSec=55
+StandardOutput=null
+StandardError=file:/var/log/racksview/gstreamer-back.log
+MemoryMax=100M
+
+[Install]
+WantedBy=multi-user.target

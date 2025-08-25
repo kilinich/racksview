@@ -1,0 +1,15 @@
+[Unit]
+Description=VRecorder Back Service
+After=gstreamer-back.service
+Requires=gstreamer-back.service
+
+[Service]
+Type=simple
+ExecStart=/opt/racksview/bin/start_vrecorder.sh --port 8013 --file event-back --flag /opt/racksview/var/motion-back.flg
+Restart=on-failure
+ExecStartPre=/usr/bin/rm -f /var/log/racksview/vrecoder-back.log
+StandardOutput=append:/var/log/racksview/vrecorder-back.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
