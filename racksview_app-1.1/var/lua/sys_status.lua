@@ -76,8 +76,8 @@ end
 
 local function plain_status()
     local lines = {}
-    table.insert(lines, "Motion-front: " .. get_motion_status_front("/opt/racksview/var/motion-front.flg"))
-    table.insert(lines, "Motion-back: " .. get_motion_status_back("/opt/racksview/var/motion-back.flg"))
+    table.insert(lines, "Motion-front: " .. get_motion_status("/opt/racksview/var/motion-front.flg"))
+    table.insert(lines, "Motion-back: " .. get_motion_status("/opt/racksview/var/motion-back.flg"))
     table.insert(lines, "")
     table.insert(lines, "Services Status:")
     local services = {
