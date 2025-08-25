@@ -64,7 +64,7 @@ do
     # Wait for the start flag to be created
     if [ -f "${START_FLAG}" ]; then
         # Run the start recording script
-        "${RUN_ON_START_REC}"
+        "${RUN_ON_START_REC}" ${FILE_NAME}
 
         # Loop until the stop flag is created
         while [ ! -f "${STOP_FLAG}" ]; do
@@ -96,7 +96,7 @@ do
             rm -f "${STOP_FLAG}"
             rm -f "${START_FLAG}"            
             # Run the stop recording script
-            "${RUN_ON_STOP_REC}"
+            "${RUN_ON_STOP_REC}" ${FILE_NAME}
         fi        
     else
         sleep 1
