@@ -12,6 +12,9 @@ enable_services=(
     rvmanager.timer
 )
 
+echo "Removing old services..."
+./scripts/remove_old_services.sh || true
+
 echo "Stopping services before installation..."
 for service in "${enable_services[@]}"; do
     echo " - Stopping service: ${service}"
