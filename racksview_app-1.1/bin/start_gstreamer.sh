@@ -44,8 +44,8 @@ if [[ "$CAM_DEV" == "CSI" ]]; then
     gst-launch-1.0 -q -e \
     libcamerasrc name=src ! queue leaky=2 ! video/x-raw,framerate=1/1 ! tee name=t \
         t. ! queue leaky=2 ! videoscale ! video/x-raw,width=1296,height=972 !\
-            textoverlay text="$HOSTNAME-$OVLABEL" valignment=top halignment=left font-desc="Sans, 10" xpos=10 ypos=10 ! \
-            clockoverlay time-format="%d-%m-%Y %H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 10" xpos=10 ypos=-10 ! \
+            textoverlay text="$HOSTNAME-$OVLABEL" valignment=top halignment=left font-desc="Sans, 8" xpos=10 ypos=10 ! \
+            clockoverlay time-format="%d-%m-%Y %H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 8" xpos=10 ypos=-10 ! \
             v4l2jpegenc ! multipartmux ! \
             tcpserversink host=127.0.0.1 port=$PORT_HIGH recover-policy=3 sync=false \
         t. ! queue leaky=2 ! videoscale ! video/x-raw,width=320,height=240 ! \
@@ -58,8 +58,8 @@ else
     gst-launch-1.0 -q -e \
     v4l2src device=$CAM_DEV ! queue leaky=2 ! image/jpeg,width=1280,height=800,framerate=10/1 ! videorate ! image/jpeg,framerate=1/1 ! v4l2jpegdec ! video/x-raw ! tee name=t \
         t. ! queue leaky=2 ! \
-            textoverlay text="$HOSTNAME-$OVLABEL" valignment=top halignment=left font-desc="Sans, 10" xpos=10 ypos=10 ! \
-            clockoverlay time-format="%d-%m-%Y %H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 10" xpos=10 ypos=-10 ! \
+            textoverlay text="$HOSTNAME-$OVLABEL" valignment=top halignment=left font-desc="Sans, 8" xpos=10 ypos=10 ! \
+            clockoverlay time-format="%d-%m-%Y %H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 8" xpos=10 ypos=-10 ! \
             v4l2jpegenc ! multipartmux ! \
             tcpserversink host=127.0.0.1 port=$PORT_HIGH recover-policy=3 sync=false \
         t. ! queue leaky=2 ! videoscale ! video/x-raw,width=320,height=240 ! \

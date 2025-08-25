@@ -39,7 +39,7 @@ RUN_ON_STOP_REC="/opt/racksview/bin/stop_recording.sh"
 TARGET_BASE="/opt/racksview/var/video"
 TEMP_NAME="_recording-in-progress"
 SEGMENT_DURATION=300
-BITRATE=60
+BITRATE=100
 
 # Initialize flags
 rm -f "${START_FLAG}"
