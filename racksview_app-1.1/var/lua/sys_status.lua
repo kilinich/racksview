@@ -86,7 +86,6 @@ local function get_motion_status(flag, unflag)
 
     return result
 end
-end
 
 local function plain_status()
     local lines = {}
