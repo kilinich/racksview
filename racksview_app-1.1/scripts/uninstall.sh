@@ -10,8 +10,6 @@ services=(
     vrecorder-front.service
     rvmanager.service
     rvmanager.timer
-    gstreamer-usb.service
-    gstreamer-csi.service
 )
 
 for svc in "${services[@]}"; do

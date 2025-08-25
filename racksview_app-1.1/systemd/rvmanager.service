@@ -1,6 +1,6 @@
 [Unit]
-Description=Restart GStreamer capture services
+Description=Restart RacksView services and roll video storage
 
 [Service]
 Type=oneshot
-ExecStart=/opt/racksview/bin/cleanup.sh
+ExecStart=/opt/racksview/scripts/cleanup.sh
