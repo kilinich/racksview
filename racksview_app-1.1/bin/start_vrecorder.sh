@@ -59,6 +59,17 @@ echo "  BITRATE: ${BITRATE}"
 rm -f "${START_FLAG}"
 rm -f "${STOP_FLAG}"
 
+echo "Setting up video storage directory..."
+if [ -d "/media/usb" ]; then
+    sudo mkdir -p /media/usb/video
+    if [ ! -L "$TARGET_BASE" ]; then
+        sudo rm -rf "$TARGET_BASE"
+        sudo ln -s /media/usb/video "$TARGET_BASE"
+    fi
+else
+    sudo mkdir -p "$TARGET_BASE"
+fi
+
 while true
 do    
     # Wait for the start flag to be created
@@ -67,7 +78,8 @@ do
         "${RUN_ON_START_REC}" ${FILE_NAME}
 
         # Loop until the stop flag is created
-        while [ ! -f "${STOP_FLAG}" ]; do
+        while true
+        do
             # Get current date/time components
             YEAR=$(date +%Y)
             MONTH=$(date +%m)
@@ -90,14 +102,16 @@ do
             "${FULL_PATH}${TEMP_NAME}.mp4"
 
             mv -f "${FULL_PATH}${TEMP_NAME}.mp4" "${FULL_PATH}.mp4"
+
+            # Check if the stop flag exists
+            if [ -f "${STOP_FLAG}" ]; then
+                rm -f "${STOP_FLAG}"
+                rm -f "${START_FLAG}"            
+                # Run the stop recording script
+                "${RUN_ON_STOP_REC}" ${FILE_NAME}
+                break
+            fi                   
         done
-        # Check if the stop flag exists
-        if [ -f "${STOP_FLAG}" ]; then
-            rm -f "${STOP_FLAG}"
-            rm -f "${START_FLAG}"            
-            # Run the stop recording script
-            "${RUN_ON_STOP_REC}" ${FILE_NAME}
-        fi        
     else
         sleep 1
     fi
