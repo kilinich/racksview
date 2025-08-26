@@ -73,8 +73,9 @@ sudo mkdir -p "$(dirname "$NGINX_CONF_DEST")"
 sudo cp -f "$NGINX_CONF_SRC" "$NGINX_CONF_DEST"
 
 echo "Reloading OpenResty (nginx)..."
-sudo usermod -aG video nobody
+sudo systemctl start openresty
 sudo openresty -s reload
+
 
 echo "Starting services..."
 for service in "${enable_services[@]}"; do

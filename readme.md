@@ -1,6 +1,6 @@
 # RacksView
 
-RacksView is an open-source hardware and software platform designed for intelligent rack monitoring and automation. Built on the Raspberry Pi and the A22 ultrasonic sensor, RacksView enables real-time video streaming, automatic door open/close detection, and instant notifications. The system is ideal for colocation servers racks monitoring.
+RacksView is an open-source hardware and software platform designed for intelligent rack monitoring and automation. Built on the Raspberry Pi and DYP-A22 ultrasonic sensor, RacksView enables real-time video streaming, automatic door open/close detection, and instant notifications. The system is ideal for colocation servers racks monitoring.
 
 ## Hardware Components
 
@@ -39,7 +39,7 @@ RacksView is an open-source hardware and software platform designed for intellig
 - **OpenResty**
     Visit the [OpenResty official website](https://openresty.org/) and follow the installation instructions.
 - **USB Auto-Mount**  
-    - **Install:** `gdebi`; `gdebi /var/tmp/usbmount_0.0.24_all.deb`
+    - **Install:** `gdebi`; `gdebi usbmount_0.0.24_all.deb`
 - **VRecorder**  
     - **Install:** `ffmpeg`
 
