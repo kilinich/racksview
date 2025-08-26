@@ -1,4 +1,4 @@
-# RacksView: Open Source Hardware Solution for Rack Monitoring
+# RacksView
 
 RacksView is an open-source hardware and software platform designed for intelligent rack monitoring and automation. Built on the Raspberry Pi and the A22 ultrasonic sensor, RacksView enables real-time video streaming, automatic door open/close detection, and instant notifications. The system is ideal for colocation servers racks monitoring.
 
