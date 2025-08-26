@@ -33,7 +33,6 @@ local function get_radio_status()
     end
     return output
 end
-end
 
 local function get_ram_usage()
     local meminfo = {}
