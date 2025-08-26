@@ -14,6 +14,8 @@ RacksView is an open-source hardware and software platform designed for intellig
     Provides stable power supply for all components.
 - **Rackmount Adjustable Box**  
     Houses and protects the hardware, allowing flexible installation in various rack configurations.
+- **Optional second unit** 
+    USB-connected expansion box equipped with an additional camera and ultrasonic sensor, enabling simultaneous monitoring of both front and rear rack doors from a single host.
 
 ## Application Components
 
