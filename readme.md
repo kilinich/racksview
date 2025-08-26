@@ -60,5 +60,5 @@ RacksView is an open-source hardware and software platform designed for intellig
 
 1. Assemble the hardware components.
 2. Install the required libraries and tools on your Raspberry Pi.
-3. Deploy the application components using provided scripts and configuration files.
+3. Deploy the application components using provided scripts (install-dual.sh, install_single.sh in app folder) and configuration files.
 4. Access the web dashboard to monitor your rack.
