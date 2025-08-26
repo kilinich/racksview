@@ -27,7 +27,12 @@ local function get_cpu_temp()
 end
 
 local function get_radio_status()
-    return get_cmd_output("rfkill list all")
+    local output = get_cmd_output("rfkill list all")
+    if output == "" then
+        return "disabled"
+    end
+    return output
+end
 end
 
 local function get_ram_usage()

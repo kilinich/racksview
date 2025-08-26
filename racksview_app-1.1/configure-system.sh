@@ -41,7 +41,4 @@ else
     echo "NTP parameter is already set in $TIMESYNCD_CONF"
 fi
 
-# Add user 'nobody' to the 'video' group for querying video devices
-sudo usermod -aG video nobody
-
 echo "Configuration complete."

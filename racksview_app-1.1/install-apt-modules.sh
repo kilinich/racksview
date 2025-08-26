@@ -24,6 +24,8 @@ sudo apt-get update
 
 echo "Installing OpenResty..."
 sudo apt-get install -y openresty
+# Add user 'nobody' to the 'video' group for querying system information
+sudo usermod -aG video nobody
 
 echo "OpenResty installation complete."
 
