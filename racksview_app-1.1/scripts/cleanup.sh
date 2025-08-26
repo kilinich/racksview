@@ -9,7 +9,8 @@ KEEP_REC_DAYS=90
 find -L "${TARGET_BASE}" -type f -ctime +${KEEP_REC_DAYS} -delete
 
 # Remove empty directories
-find -L "${TARGET_BASE}" -type d -empty -delete
+find -L "${TARGET_BASE}" -mindepth 1 -type d -empty -delete
 
+# Restart services
 /opt/racksview/scripts/stop_services.sh
 /opt/racksview/scripts/start_services.sh
