@@ -38,27 +38,15 @@ sudo apt-get install -y \
     gstreamer1.0-alsa \
     gstreamer1.0-x \
     gstreamer1.0-gl \
-    gstreamer1.0-pulseaudio \
-    gstreamer1.0-plugins-base-apps \
-    gstreamer1.0-plugins-good-apps \
-    gstreamer1.0-plugins-bad-apps \
-    gstreamer1.0-plugins-ugly-apps \
     gstreamer1.0-libav \
-    gstreamer1.0-doc \
     gstreamer1.0-tools \
     gstreamer1.0-vaapi \
-    gstreamer1.0-omx \
     gstreamer1.0-rtsp \
-    gstreamer1.0-rtp \
     gstreamer1.0-video \
-    gstreamer1.0-audio \
     gstreamer1.0-gtk3 \
     gstreamer1.0-qt5 \
-    gstreamer1.0-text \
-    gstreamer1.0-visualization \
     gstreamer1.0-gtk3 \
     gstreamer1.0-qt5 \
-    gstreamer1.0-v4l2 \
     gstreamer1.0-libcamera \
     ffmpeg
 
