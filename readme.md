@@ -34,6 +34,8 @@ RacksView is an open-source hardware and software platform designed for intellig
 - **GStreamer**  
     - **Install:** `libgstreamer1.0-dev`, `libgstreamer-plugins-base1.0-dev`, `libgstreamer-plugins-bad1.0-dev`, `gstreamer1.0-plugins-base`, `gstreamer1.0-plugins-good`, `gstreamer1.0-plugins-bad`, `gstreamer1.0-plugins-ugly`, `gstreamer1.0-libav`, `gstreamer1.0-tools`, `gstreamer1.0-x`, `gstreamer1.0-alsa`, `gstreamer1.0-gl`, `gstreamer1.0-gtk3`, `gstreamer1.0-qt5`, `gstreamer1.0-pulseaudio`, `gstreamer1.0-libcamera`  
     - **Test:** `gst-inspect-1.0 libcamerasrc`
+- **OpenResty**
+    Visit the [OpenResty official website](https://openresty.org/) and follow the installation instructions.
 - **USB Auto-Mount**  
     - **Install:** `gdebi`; `gdebi /var/tmp/usbmount_0.0.24_all.deb`
 - **VRecorder**  
@@ -54,12 +56,7 @@ RacksView is an open-source hardware and software platform designed for intellig
 
 ## Getting Started
 
-1. Assemble the hardware components as described above.
+1. Assemble the hardware components.
 2. Install the required libraries and tools on your Raspberry Pi.
 3. Deploy the application components using provided scripts and configuration files.
-4. Access the web dashboard to monitor your rack and configure notifications.
-
-For detailed setup instructions and troubleshooting, refer to the [project documentation](./docs/).
-
----
-RacksView is licensed under the MIT License. Contributions and feedback are welcome!  
+4. Access the web dashboard to monitor your rack.
