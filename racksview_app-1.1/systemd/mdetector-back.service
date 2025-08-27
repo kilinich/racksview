@@ -4,8 +4,7 @@ After=network.target
 
 [Service]
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/mdetector-back.log
-ExecStart=/opt/racksview/bin/motion_detector.bin --port /dev/serial0 --flag /opt/racksview/var/motion-back.flg --unflag /opt/racksview/var/no-motion-back.flg
-Restart=on-failure
+ExecStart=/opt/racksview/bin/motion_detector.bin --port /dev/serial1 --flag /opt/racksview/var/motion-back.flg --unflag /opt/racksview/var/no-motion-back.flg
 RestartSec=10
 StandardOutput=null
 StandardError=file:/var/log/racksview/mdetector-back.log

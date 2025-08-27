@@ -2,16 +2,16 @@
 set -e
 
 enable_services=(
-    gstreamer-back.service
-    mdetector-back.service
-    vrecorder-back.service
+    gstreamer-front.service
+    mdetector-front.service
+    vrecorder-front.service
     rvmanager.timer
 )
 
 disable_services=(
-    gstreamer-front.service
-    mdetector-front.service
-    vrecorder-front.service
+    gstreamer-back.service
+    mdetector-back.service
+    vrecorder-back.service
 )
 
 echo "Removing old services..."
