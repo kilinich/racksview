@@ -94,6 +94,9 @@ do
             # Build output file name with hours, minutes, and seconds
             OUTPUT_FILE="${HOUR}-${MINUTE}_${FILE_NAME}"
             FULL_PATH="${TARGET_DIR}/${OUTPUT_FILE}"
+            
+            #Check free space, delete old files if needed
+            /opt/racksview/scripts/check_free_space.sh ${TARGET_BASE}
 
             # Run ffmpeg to record a segment, overwriting any existing file (-y)
             ffmpeg -y -loglevel warning -r 1 -i tcp://127.0.0.1:${SOURCE_PORT} \
