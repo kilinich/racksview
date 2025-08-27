@@ -106,8 +106,8 @@ do
 
             mv -f "${FULL_PATH}${TEMP_NAME}.mp4" "${FULL_PATH}.mp4"
 
-            # Check if the stop flag exists
-            if [ -f "${STOP_FLAG}" ]; then
+            # Check if the stop flag exists or start flag removed
+            if [ -f "${STOP_FLAG}" ] || [ ! -f "${START_FLAG}" ]; then
                 rm -f "${STOP_FLAG}"
                 rm -f "${START_FLAG}"            
                 # Run the stop recording script
