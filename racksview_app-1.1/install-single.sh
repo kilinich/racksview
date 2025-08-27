@@ -23,6 +23,10 @@ for service in "${enable_services[@]}"; do
     sudo systemctl stop "${service}" || true
 done
 for service in "${disable_services[@]}"; do
+    echo " - Stopping service: ${service}"
+    sudo systemctl stop "${service}" || true
+done
+for service in "${disable_services[@]}"; do
     echo " - Disabling service: ${service}"
     sudo systemctl mask "${service}" || true
 done

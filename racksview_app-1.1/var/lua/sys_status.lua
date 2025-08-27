@@ -136,9 +136,9 @@ local function plain_status_single()
     table.insert(lines, "")
     table.insert(lines, "Services Status:")
     local services = {
-        "gstreamer-back.service",
-        "mdetector-back.service",
-        "vrecorder-back.service"
+        "gstreamer-front.service",
+        "mdetector-front.service",
+        "vrecorder-front.service"
     }
     for _, svc in ipairs(services) do
         local status, uptime = get_service_status(svc)
