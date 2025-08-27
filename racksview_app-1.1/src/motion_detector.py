@@ -1,3 +1,4 @@
+from asyncio.log import logger
 import datetime
 import sys
 import serial
@@ -5,9 +6,16 @@ import argparse
 from collections import deque
 import time
 import os
+import logging
+import logging.handlers
 
 def log_error(message):
-    print(f"{datetime.datetime.now()} - {message}", file=sys.stderr)
+    logging.basicConfig(
+        level=logging.ERROR,
+        format='%(asctime)s [%(levelname)s] %(message)s',
+        stream=sys.stderr
+    )
+    logging.error(message)
 
 def read_distance():
     parser = argparse.ArgumentParser(description="Read distance from ultrasonic sensor via serial port.")
@@ -18,7 +26,7 @@ def read_distance():
     parser.add_argument('--distance', type=int, default=300, help='Minimum distance (default: 300) to consider motion undetected')
     parser.add_argument('--flag', type=str, default='/tmp/motion.flg', help='Name for motion flags (default: /tmp/motion.flg)')
     parser.add_argument('--unflag', type=str, default='/tmp/no-motion.flg', help='Name for no motion flags (default: /tmp/no-motion.flg)')
-
+    parser.add_argument('--dump',  type=str, default='/dev/shm/mdetector.txt', help='Name for dump file (default: /dev/shm/mdetector.txt)')
 
     args, _ = parser.parse_known_args()
 
@@ -35,7 +43,16 @@ def read_distance():
     if args.distance < 20:
         log_error("Distance value must be at least 20.")
         sys.exit(1)
-        
+
+    dumper = logging.getLogger('motion_detector_dump')
+    dumper.setLevel(logging.INFO)
+    dump_handler = logging.handlers.RotatingFileHandler(
+        args.dump,
+        maxBytes=1024 * 1024,  # 1MB  rotate size
+        backupCount=1  # Keep 1 backup
+    )
+    dumper.addHandler(dump_handler)
+
     # Delete old flag files on start
     for flag_file in [args.flag, args.unflag]:
         try:
@@ -133,7 +150,10 @@ def read_distance():
                                 )
                                 flag_file.flush()
                         motion_status = "detected"
-                    print(f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [values]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})")
+                    debug_info = f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [values]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})"
+                    print(debug_info)
+                    # Write to dump file using standard logging for rotation
+                    dumper.info(debug_info)
     except KeyboardInterrupt:
         log_error("Keyboard interrupt received, exiting gracefully.")
     except Exception as e:
