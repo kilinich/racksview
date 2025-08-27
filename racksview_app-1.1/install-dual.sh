@@ -20,6 +20,10 @@ for service in "${enable_services[@]}"; do
     sudo systemctl stop "${service}" || true
     sudo systemctl unmask "${service}" || true
 done
+for service in "${enable_services[@]}"; do
+    echo " - Unmasking service: ${service}"
+    sudo systemctl unmask "${service}" || true
+done
 
 APP_SRC="$(pwd)"
 DEST_DIR="/opt/racksview"
