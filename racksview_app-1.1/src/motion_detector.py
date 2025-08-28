@@ -119,7 +119,7 @@ def read_distance():
                     nonzero_ratio = len(nonzero_distances) / len(distances) if distances else 0
                     if time.time() - init_time < args.average:
                         motion_status = "initializing"
-                    elif (jitter < args.jitter and avg_distance < args.distance and values_in_window > args.average and nonzero_ratio >= 1/3):
+                    elif (jitter < args.jitter and avg_distance < args.distance and nonzero_ratio >= 1/3):
                         # Motion undetected
                         if motion_status == "detected":
                             # Flag switching from detected to undetected

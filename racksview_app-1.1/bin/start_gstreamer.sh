@@ -42,7 +42,7 @@ export GST_DEBUG=1
 if [[ "$CAM_DEV" == "CSI" ]]; then
     # Start the gstreamer pipeline for CSI (built-in) camera
     gst-launch-1.0 -q -e \
-    libcamerasrc name=src ! queue leaky=2 ! video/x-raw,framerate=2/1 ! tee name=t \
+    libcamerasrc name=src ! queue leaky=2 ! video/x-raw,framerate=1/1 ! tee name=t \
         t. ! queue leaky=2 ! videoscale ! video/x-raw,width=1296,height=972 !\
             textoverlay text="$HOSTNAME-$OVLABEL" valignment=top halignment=left font-desc="Sans, 8" xpos=10 ypos=10 ! \
             clockoverlay time-format="%d-%m-%Y %H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 8" xpos=10 ypos=-10 ! \
@@ -56,7 +56,7 @@ if [[ "$CAM_DEV" == "CSI" ]]; then
 else
     # Start the gstreamer pipeline for USB camera
     gst-launch-1.0 -q -e \
-    v4l2src device=$CAM_DEV ! queue leaky=2 ! image/jpeg,width=1280,height=800,framerate=10/1 ! videorate ! image/jpeg,framerate=2/1 ! v4l2jpegdec ! video/x-raw ! tee name=t \
+    v4l2src device=$CAM_DEV ! queue leaky=2 ! image/jpeg,width=1280,height=800,framerate=10/1 ! videorate ! image/jpeg,framerate=1/1 ! v4l2jpegdec ! video/x-raw ! tee name=t \
         t. ! queue leaky=2 ! \
             textoverlay text="$HOSTNAME-$OVLABEL" valignment=top halignment=left font-desc="Sans, 8" xpos=10 ypos=10 ! \
             clockoverlay time-format="%d-%m-%Y %H:%M.%S" valignment=bottom halignment=left font-desc="Sans, 8" xpos=10 ypos=-10 ! \
