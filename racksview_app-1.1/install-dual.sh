@@ -11,17 +11,13 @@ enable_services=(
     rvmanager.timer
 )
 
-echo "Removing old services..."
-bash ./scripts/remove_old_services.sh || true
+echo "Removing legacy services..."
+bash ./scripts/remove_legacy_services.sh || true
 
 echo "Stopping services before installation..."
 for service in "${enable_services[@]}"; do
     echo " - Stopping service: ${service}"
     sudo systemctl stop "${service}" || true
-    sudo systemctl unmask "${service}" || true
-done
-for service in "${enable_services[@]}"; do
-    echo " - Unmasking service: ${service}"
     sudo systemctl unmask "${service}" || true
 done
 

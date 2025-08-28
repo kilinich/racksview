@@ -14,8 +14,8 @@ disable_services=(
     vrecorder-back.service
 )
 
-echo "Removing old services..."
-bash ./scripts/remove_old_services.sh || true
+echo "Removing legacy services..."
+bash ./scripts/remove_legacy_services.sh || true
 
 echo "Stopping services before installation..."
 for service in "${enable_services[@]}"; do
