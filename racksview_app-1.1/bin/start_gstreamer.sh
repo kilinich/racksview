@@ -4,20 +4,8 @@ set +e
 # Check and parse command-line arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --camera)
-            CAM_DEV="$2"
-            shift 2
-            ;;
-        --porthigh)
-            PORT_HIGH="$2"
-            shift 2
-            ;;
-        --portlow)
-            PORT_LOW="$2"
-            shift 2
-            ;;
-        --label)
-            OVLABEL="$2"
+        --profile)
+            PROFILE="$2"
             shift 2
             ;;
         *)
@@ -27,11 +15,31 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Ensure all required parameters are set
-if [[ -z "${CAM_DEV}" || -z "${PORT_HIGH}" || -z "${PORT_LOW}" || -z "${OVLABEL}" ]]; then
-    echo "Usage: $0 --camera <camera_device> --porthigh <port_high> --portlow <port_low> --label <overlay_label>"
+# Ensure required parameter is set
+if [[ -z "${PROFILE}" ]]; then
+    echo "Usage: $0 --profile <front|back>"
     exit 1
 fi
+
+# Assign variables based on profile
+case "$PROFILE" in
+    front)
+        CAM_DEV="CSI"
+        PORT_HIGH=8013
+        PORT_LOW=8012
+        OVLABEL="door1"
+        ;;
+    back)
+        CAM_DEV="/dev/video0"
+        PORT_HIGH=9013
+        PORT_LOW=9012
+        OVLABEL="door2"
+        ;;
+    *)
+        echo "Invalid profile: $PROFILE. Use 'front' or 'back'."
+        exit 1
+        ;;
+esac
 
 export GST_DEBUG=1
 # Start the gstreamer pipeline

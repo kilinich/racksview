@@ -1,37 +1,34 @@
 #!/bin/bash
 set +e
 
-# Check and parse command-line arguments
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --port)
-            SOURCE_PORT="$2"
-            shift 2
-            ;;
-        --file)
-            FILE_NAME="$2"
-            shift 2
-            ;;
-        --flag)
-            START_FLAG="$2"
-            shift 2
-            ;;
-        --unflag)
-            STOP_FLAG="$2"
-            shift 2
-            ;;
-        *)
-            echo "Unknown option: $1"
-            exit 1
-            ;;
-    esac
-done
-
-# Ensure all required parameters are set
-if [[ -z "${SOURCE_PORT}" || -z "${FILE_NAME}" || -z "${START_FLAG}" || -z "${STOP_FLAG}" ]]; then
-    echo "Usage: $0 --port <source_port> --file <file_name> --flag <start_flag> --unflag <stop_flag>"
+# Parse --profile argument
+if [[ "$1" == "--profile" && -n "$2" ]]; then
+    PROFILE="$2"
+    shift 2
+else
+    echo "Usage: $0 --profile <front|back>"
     exit 1
 fi
+
+# Apply profile settings
+case "$PROFILE" in
+    front)
+        SOURCE_PORT=8013
+        FILE_NAME="event-door1"
+        START_FLAG="/opt/racksview/var/motion-front.flg"
+        STOP_FLAG="/opt/racksview/var/no-motion-front.flg"
+        ;;
+    back)
+        SOURCE_PORT=9013
+        FILE_NAME="event-door2"
+        START_FLAG="/opt/racksview/var/motion-back.flg"
+        STOP_FLAG="/opt/racksview/var/no-motion-back.flg"
+        ;;
+    *)
+        echo "Unknown profile: $PROFILE"
+        exit 1
+        ;;
+esac
 
 # Configuration
 RUN_ON_START_REC="/opt/racksview/bin/on_start_recording.sh"

@@ -5,11 +5,11 @@ Requires=gstreamer-front.service
 
 [Service]
 Type=simple
-ExecStart=/opt/racksview/bin/start_vrecorder.sh --port 8013 --file event-door1 --flag /opt/racksview/var/motion-front.flg --unflag /opt/racksview/var/no-motion-front.flg
+ExecStart=/opt/racksview/bin/start_vrecorder.sh --profile front
 Restart=on-failure
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/vrecoder-front.log
-StandardOutput=append:/var/log/racksview/vrecorder-front.log
-StandardError=inherit
+StandardOutput=file:/var/log/racksview/vrecorder-front.log
+StandardError=file:/var/log/racksview/vrecorder-front.log
 
 [Install]
 WantedBy=multi-user.target

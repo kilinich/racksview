@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/gstreamer-front.log
-ExecStart=/opt/racksview/bin/start_gstreamer.sh --camera CSI --porthigh 8013 --portlow 8012 --label door1
+ExecStart=/opt/racksview/bin/start_gstreamer.sh --profile front
 Restart=on-failure
 RestartSec=60
 StandardOutput=null

@@ -5,11 +5,11 @@ Requires=gstreamer-back.service
 
 [Service]
 Type=simple
-ExecStart=/opt/racksview/bin/start_vrecorder.sh --port 9013 --file event-door2 --flag /opt/racksview/var/motion-back.flg --unflag /opt/racksview/var/no-motion-back.flg
+ExecStart=/opt/racksview/bin/start_vrecorder.sh --profile back
 Restart=on-failure
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/vrecoder-back.log
-StandardOutput=append:/var/log/racksview/vrecorder-back.log
-StandardError=inherit
+StandardOutput=file:/var/log/racksview/vrecorder-back.log
+StandardError=file:/var/log/racksview/vrecorder-back.log
 
 [Install]
 WantedBy=multi-user.target

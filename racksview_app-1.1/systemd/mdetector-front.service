@@ -4,10 +4,10 @@ After=network.target
 
 [Service]
 ExecStartPre=/usr/bin/rm -f /var/log/racksview/mdetector-front.log
-ExecStart=/opt/racksview/bin/motion_detector.bin --port /dev/serial0 --flag /opt/racksview/var/motion-front.flg --unflag /opt/racksview/var/no-motion-front.flg
+ExecStart=/opt/racksview/bin/start_mdetector.sh --profile front
 Restart=on-failure
 RestartSec=10
-StandardOutput=null
+StandardOutput=file:/var/log/racksview/mdetector-front.log
 StandardError=file:/var/log/racksview/mdetector-front.log
 MemoryMax=50M
 

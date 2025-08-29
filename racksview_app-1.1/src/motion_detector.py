@@ -7,15 +7,8 @@ from collections import deque
 import time
 import os
 import logging
-import logging.handlers
 
-def log_error(message):
-    logging.basicConfig(
-        level=logging.ERROR,
-        format='%(asctime)s [%(levelname)s] %(message)s',
-        stream=sys.stderr
-    )
-    logging.error(message)
+logging.basicConfig(level=logging.INFO)
 
 def read_distance():
     parser = argparse.ArgumentParser(description="Read distance from ultrasonic sensor via serial port.")
@@ -32,26 +25,17 @@ def read_distance():
 
     # Check for incorrect values
     if args.baudrate < 110:
-        log_error("Baud rate must be 110 or greater.")
+        logging.error("Baud rate must be 110 or greater.")
         sys.exit(1)
     if args.average < 1:
-        log_error("Average window must be a positive number.")
+        logging.error("Average window must be a positive number.")
         sys.exit(1)
     if args.jitter < 1:
-        log_error("Jitter value must be a positive integer.")
+        logging.error("Jitter value must be a positive integer.")
         sys.exit(1)
     if args.distance < 20:
-        log_error("Distance value must be at least 20.")
-        sys.exit(1)
-
-    dumper = logging.getLogger('motion_detector_dump')
-    dumper.setLevel(logging.INFO)
-    dump_handler = logging.handlers.RotatingFileHandler(
-        args.dump,
-        maxBytes=1024 * 1024,  # 1MB  rotate size
-        backupCount=1  # Keep 1 backup
-    )
-    dumper.addHandler(dump_handler)
+        logging.error("Distance value must be at least 20.")
+        sys.exit(1) 
 
     # Delete old flag files on start
     for flag_file in [args.flag, args.unflag]:
@@ -59,7 +43,7 @@ def read_distance():
             if os.path.exists(flag_file):
                 os.remove(flag_file)
         except Exception as e:
-            log_error(f"Could not remove flag file {flag_file}: {e}")
+            logging.error(f"Could not remove flag file {flag_file}: {e}")
 
     try:
         ser = serial.Serial(
@@ -68,7 +52,7 @@ def read_distance():
             timeout=10
         )
     except serial.SerialException as e:
-        log_error(f"Error opening serial port {args.port}: {e}")
+        logging.error(f"Error opening serial port {args.port}: {e}")
         sys.exit(1)
     
     try:
@@ -79,7 +63,7 @@ def read_distance():
         while True:
             byte = ser.read(1)
             if not byte:
-                log_error("No data received from serial port within timeout")
+                logging.error("No data received from serial port within timeout")
                 sys.exit(2)
 
             buffer.append(byte[0])
@@ -89,7 +73,7 @@ def read_distance():
                 if checksum == (start_byte + data_h + data_l) & 0x00FF:
                     # Check for co-frequency interference (0xFFFE)
                     if data_h == 0xFF and data_l == 0xFE:
-                        log_error("Co-frequency interference detected")
+                        logging.error("Co-frequency interference detected")
                         continue
                     # Check for no object detected (0xFFFD)
                     if data_h == 0xFF and data_l == 0xFD:
@@ -117,6 +101,7 @@ def read_distance():
                         jitter = 0
                     # Determine if the reading is stable or unstable
                     nonzero_ratio = len(nonzero_distances) / len(distances) if distances else 0
+                    debug_info = f"{motion_status}  {datetime.datetime.now().strftime('%H:%M.%S')} dist={distances[-1]} avg={avg_distance} jitter={jitter} values={values_in_window} measured={round(nonzero_ratio*100)}%"
                     if time.time() - init_time < args.average:
                         motion_status = "initializing"
                     elif (jitter < args.jitter and avg_distance < args.distance and nonzero_ratio >= 1/3):
@@ -124,14 +109,7 @@ def read_distance():
                         if motion_status == "detected":
                             # Flag switching from detected to undetected
                             with open(args.unflag, "w") as unflag_file:
-                                unflag_file.write(
-                                    f"undetected {datetime.datetime.now().strftime('%H:%M.%S')} "
-                                    f"dist={distances[-1]} "
-                                    f"avg={avg_distance} "
-                                    f"jitter={jitter} "
-                                    f"values={values_in_window} "
-                                    f"measured={round(nonzero_ratio*100)}%"
-                                )
+                                unflag_file.write(debug_info)
                                 unflag_file.flush()
                         motion_status = "undetected"
                     else:
@@ -140,24 +118,17 @@ def read_distance():
                             os.remove(args.unflag)
                         if motion_status == "undetected" or motion_status == "initializing":
                             with open(args.flag, "w") as flag_file:
-                                flag_file.write(
-                                    f"detected {datetime.datetime.now().strftime('%H:%M.%S')} "
-                                    f"dist={distances[-1]} "
-                                    f"avg={avg_distance} "
-                                    f"jitter={jitter} "
-                                    f"values={values_in_window} "
-                                    f"measured={round(nonzero_ratio*100)}%"
-                                )
+                                flag_file.write(debug_info)
                                 flag_file.flush()
                         motion_status = "detected"
-                    debug_info = f"([distance]={distances[-1]} [avg]={avg_distance} [jitter]={jitter} [values]={values_in_window} [measured]={nonzero_ratio:.2f} [motion]={motion_status})"
-                    print(debug_info)
-                    # Write to dump file using standard logging for rotation
-                    dumper.info(debug_info)
+                    # Write to dump file
+                    with open(args.dump, "w") as dump_file:
+                        dump_file.write(debug_info)
+                        dump_file.flush()
     except KeyboardInterrupt:
-        log_error("Keyboard interrupt received, exiting gracefully.")
+        logging.info("Keyboard interrupt received, exiting gracefully.")
     except Exception as e:
-        log_error(f"Error during serial read: {e}")
+        logging.error(f"Error during serial read: {e}")
     finally:
         ser.close()
 

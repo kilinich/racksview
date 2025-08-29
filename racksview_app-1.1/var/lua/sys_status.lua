@@ -71,14 +71,21 @@ local function get_service_status(name)
     return status, uptime or "N/A"
 end
 
-local function get_motion_status(flag, unflag)
+local function get_motion_status(flag, unflag, dump)
     local result = ""
     local f = io.open(flag, "r")
     if f then
         result = f:read("*a")
         f:close()
     else
-        result = "undetected"
+        local f_dump = io.open(dump, "r")
+        if f_dump then
+            local dump_content = f_dump:read("*a")
+            f_dump:close()
+            result = "monitoring" .. dump_content
+        else
+            result = "no data"
+        end
     end
 
     local f2 = io.open(unflag, "r")
@@ -94,18 +101,18 @@ end
 local function plain_status_dual()
     local lines = {}
     table.insert(lines, "Motion-front:")
-    table.insert(lines, get_motion_status("/opt/racksview/var/motion-front.flg","/opt/racksview/var/no-motion-front.flg"))
+    table.insert(lines, get_motion_status("/opt/racksview/var/motion-front.flg", "/opt/racksview/var/no-motion-front.flg", "/dev/shm/mdetector-front.txt"))
     table.insert(lines, "")
     table.insert(lines, "Motion-back:")
-    table.insert(lines, get_motion_status("/opt/racksview/var/motion-back.flg","/opt/racksview/var/no-motion-back.flg"))
+    table.insert(lines, get_motion_status("/opt/racksview/var/motion-back.flg", "/opt/racksview/var/no-motion-back.flg", "/dev/shm/mdetector-back.txt"))
     table.insert(lines, "")
     table.insert(lines, "Services Status:")
     local services = {
         "gstreamer-front.service",
-        "gstreamer-back.service",
         "mdetector-front.service",
-        "mdetector-back.service",
         "vrecorder-front.service",
+        "gstreamer-back.service",
+        "mdetector-back.service",
         "vrecorder-back.service"
     }
     for _, svc in ipairs(services) do
