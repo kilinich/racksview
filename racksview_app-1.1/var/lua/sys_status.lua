@@ -73,19 +73,21 @@ end
 
 local function get_motion_status(flag, unflag, dump)
     local result = ""
-    local f = io.open(flag, "r")
-    if f then
-        result = f:read("*a")
-        f:close()
+
+    local f_dump = io.open(dump, "r")
+    if f_dump then
+        local dump_content = f_dump:read("*a")
+        f_dump:close()
+        result = "monitoring " .. dump_content
     else
-        local f_dump = io.open(dump, "r")
-        if f_dump then
-            local dump_content = f_dump:read("*a")
-            f_dump:close()
-            result = "monitoring " .. dump_content
-        else
-            result = "no data"
-        end
+        result = "no monitoring data"
+    end
+
+    local f1 = io.open(flag, "r")
+    if f1 then
+        local flag_content = f1:read("*a")
+        f1:close()
+        result = result .. "\n" .. flag_content
     end
 
     local f2 = io.open(unflag, "r")
