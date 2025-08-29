@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 def read_distance():
     parser = argparse.ArgumentParser(description="Read distance from ultrasonic sensor via serial port.")
     parser.add_argument('--port', type=str, default='/dev/serial0', help='Serial device name (default: /dev/serial0)')
-    parser.add_argument('--baudrate', type=int, default=115200, help='Baud rate (default: 115200)')
+    parser.add_argument('--baud', type=int, default=115200, help='Baud rate (default: 115200)')
     parser.add_argument('--average', type=int, default=5, help='Time in seconds (default: 5) to average the distance readings')
     parser.add_argument('--jitter', type=int, default=50, help='Jitter value (default: 50) indicated motion detected')
     parser.add_argument('--distance', type=int, default=300, help='Minimum distance (default: 300) to consider motion undetected')
@@ -24,7 +24,7 @@ def read_distance():
     args, _ = parser.parse_known_args()
 
     # Check for incorrect values
-    if args.baudrate < 110:
+    if args.baud < 110:
         logging.error("Baud rate must be 110 or greater.")
         sys.exit(1)
     if args.average < 1:
@@ -48,7 +48,7 @@ def read_distance():
     try:
         ser = serial.Serial(
             port=args.port,
-            baudrate=args.baudrate,
+            baudrate=args.baud,
             timeout=10
         )
     except serial.SerialException as e:
@@ -60,6 +60,7 @@ def read_distance():
         distances = deque(maxlen=1000)
         timestamps = deque(maxlen=1000)
         init_time = time.time()
+        motion_status = "initializing"
         while True:
             byte = ser.read(1)
             if not byte:
