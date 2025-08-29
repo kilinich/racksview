@@ -82,7 +82,7 @@ local function get_motion_status(flag, unflag, dump)
         if f_dump then
             local dump_content = f_dump:read("*a")
             f_dump:close()
-            result = "monitoring" .. dump_content
+            result = "monitoring " .. dump_content
         else
             result = "no data"
         end
