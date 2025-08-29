@@ -102,7 +102,7 @@ def read_distance():
                         jitter = 0
                     # Determine if the reading is stable or unstable
                     nonzero_ratio = len(nonzero_distances) / len(distances) if distances else 0
-                    debug_info = f"{motion_status}  {datetime.datetime.now().strftime('%H:%M.%S')} dist={distances[-1]} avg={avg_distance} jitter={jitter} values={values_in_window} measured={round(nonzero_ratio*100)}%"
+                    debug_info = f"{datetime.datetime.now().strftime('%H:%M.%S')} dist={distances[-1]} avg={avg_distance} jitter={jitter} values={values_in_window} measured={round(nonzero_ratio*100)}%"
                     if time.time() - init_time < args.average:
                         motion_status = "initializing"
                     elif (jitter < args.jitter and avg_distance < args.distance and nonzero_ratio >= 1/3):
@@ -110,7 +110,7 @@ def read_distance():
                         if motion_status == "detected":
                             # Flag switching from detected to undetected
                             with open(args.unflag, "w") as unflag_file:
-                                unflag_file.write(debug_info)
+                                unflag_file.write(f"flag undetected {debug_info}")
                                 unflag_file.flush()
                         motion_status = "undetected"
                     else:
@@ -119,12 +119,12 @@ def read_distance():
                             os.remove(args.unflag)
                         if motion_status == "undetected" or motion_status == "initializing":
                             with open(args.flag, "w") as flag_file:
-                                flag_file.write(debug_info)
+                                flag_file.write(f"flag detected {debug_info}")
                                 flag_file.flush()
                         motion_status = "detected"
                     # Write to dump file
                     with open(args.dump, "w") as dump_file:
-                        dump_file.write(debug_info)
+                        dump_file.write(f"{motion_status} {debug_info}")
                         dump_file.flush()
     except KeyboardInterrupt:
         logging.info("Keyboard interrupt received, exiting gracefully.")

@@ -40,6 +40,7 @@ echo "PORT=$PORT"
 echo "BAUD=$BAUD"
 echo "FLAG=$FLAG"
 echo "UNFLAG=$UNFLAG"
+echo "DUMP=$DUMP"
 
 # /opt/racksview/bin/motion_detector.bin --port "$PORT" --baud "$BAUD" --flag "$FLAG" --unflag "$UNFLAG" > /dev/null
 /usr/bin/python3 /opt/racksview/src/motion_detector.py --port "$PORT" --baud "$BAUD" --flag "$FLAG" --unflag "$UNFLAG" --dump "$DUMP"
