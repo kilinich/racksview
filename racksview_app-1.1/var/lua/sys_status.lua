@@ -139,7 +139,7 @@ end
 local function plain_status_single()
     local lines = {}
     table.insert(lines, "Motion:")
-    table.insert(lines, get_motion_status("/opt/racksview/var/motion-front.flg","/opt/racksview/var/no-motion-front.flg"))
+    table.insert(lines, get_motion_status("/opt/racksview/var/motion-front.flg","/opt/racksview/var/no-motion-front.flg", "/dev/shm/mdetector-front.txt"))
     table.insert(lines, "")
     table.insert(lines, "Services Status:")
     local services = {
