@@ -16,7 +16,7 @@ def read_distance():
     parser.add_argument('--baud', type=int, default=115200, help='Baud rate (default: 115200)')
     parser.add_argument('--average', type=int, default=5, help='Time in seconds (default: 5) to average the distance readings')
     parser.add_argument('--jitter', type=int, default=50, help='Jitter value (default: 50) indicated motion detected')
-    parser.add_argument('--distance', type=int, default=300, help='Minimum distance (default: 300) to consider motion undetected')
+    parser.add_argument('--distance', type=int, default=350, help='Minimum distance (default: 350) to consider motion undetected')
     parser.add_argument('--flag', type=str, default='/tmp/motion.flg', help='Name for motion flags (default: /tmp/motion.flg)')
     parser.add_argument('--unflag', type=str, default='/tmp/no-motion.flg', help='Name for no motion flags (default: /tmp/no-motion.flg)')
     parser.add_argument('--dump',  type=str, default='/dev/shm/mdetector.txt', help='Name for dump file (default: /dev/shm/mdetector.txt)')
