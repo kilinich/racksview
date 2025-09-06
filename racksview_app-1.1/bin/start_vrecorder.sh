@@ -36,7 +36,7 @@ RUN_ON_STOP_REC="/opt/racksview/notify/on_stop_recording.sh"
 TARGET_BASE="/opt/racksview/var/video"
 TEMP_NAME="_recording-in-progress"
 SEGMENT_DURATION=300
-BITRATE=50
+BITRATE=100
 
 # Log parameters and config to stdout
 echo "Starting vrecorder with the following parameters:"

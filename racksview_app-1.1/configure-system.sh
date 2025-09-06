@@ -41,4 +41,8 @@ else
     echo "NTP parameter is already set in $TIMESYNCD_CONF"
 fi
 
+echo "Adding cron job for weekly reboot..."
+# Add a cron job to reboot the system weekly
+(echo "0 3 * * 1 sudo reboot") | sudo crontab -
+
 echo "Configuration complete."
