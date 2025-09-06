@@ -11,6 +11,8 @@ RestartSec=55
 StandardOutput=null
 StandardError=file:/var/log/racksview/gstreamer-back.log
 MemoryMax=100M
+KillSignal=SIGINT
+TimeoutStopSec=5
 
 [Install]
 WantedBy=multi-user.target

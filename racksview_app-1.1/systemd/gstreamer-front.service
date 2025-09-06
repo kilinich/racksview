@@ -10,6 +10,8 @@ RestartSec=60
 StandardOutput=null
 StandardError=file:/var/log/racksview/gstreamer-front.log
 MemoryMax=100M
+KillSignal=SIGINT
+TimeoutStopSec=5
 
 [Install]
 WantedBy=multi-user.target
