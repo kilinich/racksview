@@ -1,5 +1,7 @@
 # RacksView
 
+![RacksView 3D Model](racksview_app-1.1/racksview.png "RacksView 3d model")
+
 RacksView is an open-source hardware and software platform designed for intelligent rack monitoring and automation. Built on the Raspberry Pi and DYP-A22 ultrasonic sensor, RacksView enables real-time video streaming, automatic door open/close detection, and instant notifications. The system is ideal for colocation servers racks monitoring.
 
 ## Hardware Components
